@@ -1,0 +1,75 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: jhrm-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: jinso_jhrm
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345678
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jhrm-api
+    restart: always
+    depends_on:
+      - postgres
+
+    ports:
+      - "5120:5120"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+
+      # =========================
+      # DATABASE
+      # =========================
+      ConnectionStrings__WebApiDatabase: Host=postgres;Port=5432;Database=jinso_jhrm;Username=postgres;Password=12345678
+
+      Database__Migrate: "false"
+      Database__Seeder: "false"
+
+      # =========================
+      # APP SETTINGS
+      # =========================
+      AppSettings__Token: 7D4C9583FBB1AA0CBE3B87239F8652A4BC1A992CE9E72A5C7B45A1F6BE11A3F93462DFD0D8023F7C7842A76F16BD48D69A388D7D8372ED9B72AC8B1AFCACCC83
+      AppSettings__Expires: 1
+      AppSettings__UseSwagger: "true"
+      AppSettings__UrlFrontend: https://jinzaicompass.com/#/auth/login
+
+      # =========================
+      # AWS
+      # =========================
+      AWS__BucketName: jinzaicompass-image
+      AWS__bucketNameforPDF: jinzaicompass-pdf
+      AWS_REGION: ap-northeast-1
+
+      # =========================
+      # SQS
+      # =========================
+      SQS__SystemName: ap-northeast-1
+      SQS__UserQueueUrl: https://sqs.ap-northeast-1.amazonaws.com/682270047315/user_register_queue.fifo
+      SQS__ForgetPasswordQueueUrl: https://sqs.ap-northeast-1.amazonaws.com/682270047315/forget_password_queue.fifo
+      SQS__ContactQueueUrl: https://sqs.ap-northeast-1.amazonaws.com/682270047315/contact_queue.fifo
+      SQS__TenantQueueUrl: https://sqs.ap-northeast-1.amazonaws.com/682270047315/tenant_queue.fifo
+      SQS__TenantSettingQueueUrl: https://sqs.ap-northeast-1.amazonaws.com/682270047315/tenant_setting_queue.fifo
+      SQS__TenantStatusQueueUrl: https://sqs.ap-northeast-1.amazonaws.com/682270047315/tenant_status_queue.fifo
+      SQS__TenantExpiringQueueUrl: https://sqs.ap-northeast-1.amazonaws.com/682270047315/tenant_expiring_queue.fifo
+      SQS__RegisterUser: register-user
+      SQS__ForgetPassword: forget-password
+      SQS__Contact: contact
+      SQS__Tenant: tenant
+      SQS__TenantSetting: tenant-setting
+      SQS__TenantStatus: tenant-status
+      SQS__TenantExpiring: tenant-expiring
+
+volumes:
+  postgres_data:

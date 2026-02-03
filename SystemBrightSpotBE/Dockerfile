@@ -6,6 +6,19 @@ RUN dotnet restore "./SystemBrightSpotBE.csproj"
 COPY . .
 RUN dotnet publish "SystemBrightSpotBE.csproj" -c Release -o /app/publish
 
+
+# # =========================
+# # Stage 2: Runtime (LOCAL)
+# # =========================
+# FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# WORKDIR /app
+
+# COPY --from=build /app/publish .
+
+# ENV ASPNETCORE_URLS=http://0.0.0.0:5120
+
+# ENTRYPOINT ["dotnet", "SystemBrightSpotBE.dll"]
+
 # Stage 2: Runtime (Dùng image của AWS)
 FROM public.ecr.aws/lambda/dotnet:8
 WORKDIR /var/task
@@ -35,5 +48,4 @@ RUN dnf install -y \
 # Copy code đã build vào image
 COPY --from=build /app/publish .
 
-# Chỉ định Handler (Cấu hình này cực kỳ quan trọng cho .NET)
-CMD ["SystemBrightSpotBE::SystemBrightSpotBE.LambdaEntryPoint::FunctionHandlerAsync"]
+ENTRYPOINT ["dotnet", "SystemBrightSpotBE.dll"]

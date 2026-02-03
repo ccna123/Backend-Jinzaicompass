@@ -4,6 +4,7 @@
 
 global using SystemBrightSpotBE.Base;
 global using SystemBrightSpotBE.Data;
+using Amazon.Lambda.AspNetCoreServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -190,6 +191,12 @@ builder.Services.AddHostedService<LogInitializerHostedService>();
 // Init CronJob SERVICE
 //=========================================
 builder.Services.AddSingleton<IHostedService, TenantCronJobService>();
+
+
+//=========================================
+// Intergrate to AWS Lambda
+//=========================================
+builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
 
 //=========================================
 // BUILD APP
