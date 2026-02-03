@@ -1,0 +1,201 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.6.13" />
+    <PackageReference Include="AWSSDK.SQS" Version="4.0.1.1" />
+    <PackageReference Include="CloudinaryDotNet" Version="1.27.6" />
+    <PackageReference Include="CsvHelper" Version="33.0.1" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
+    <PackageReference Include="EPPlus" Version="8.0.2" />
+    <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.4" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.15" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.15" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.55.0" />
+    <PackageReference Include="NCrontab.Signed" Version="3.4.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+    <PackageReference Include="NPOI" Version="2.7.3" />
+    <PackageReference Include="PuppeteerSharp" Version="20.2.2" />
+    <PackageReference Include="QuestPDF" Version="2025.7.0" />
+    <PackageReference Include="QuestPDF.HTML" Version="1.4.2" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="8.1.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.9" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.0.2" />
+    <PackageReference Include="log4net" Version="3.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\Database\Seeder\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="PDFDocument\Fonts\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Database\" />
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Dtos\Company\UpdateCompanyDto.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\ApiResource.Designer.cs">
+      <DependentUpon>ApiResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\MonitoringSystemResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MonitoringSystemResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\TenantResource.Designer.cs">
+      <DependentUpon>TenantResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\ContactResource.Designer.cs">
+      <DependentUpon>ContactResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\MailResource.Designer.cs">
+      <DependentUpon>MailResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\CategoryResource.Designer.cs">
+      <DependentUpon>CategoryResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\CompanyResource.Designer.cs">
+      <DependentUpon>CompanyResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\SettingResource.Designer.cs">
+      <DependentUpon>SettingResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\ReportResource.Designer.cs">
+      <DependentUpon>ReportResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\PlanResource.Designer.cs">
+      <DependentUpon>PlanResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\ServerResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ServerResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\ProjectResource.Designer.cs">
+      <DependentUpon>ProjectResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\UserResource.Designer.cs">
+      <DependentUpon>UserResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\AuthResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AuthResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\ApiResource.resx">
+      <LastGenOutput>ApiResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MonitoringSystemResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MonitoringSystemResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\TenantResource.resx">
+      <LastGenOutput>TenantResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ContactResource.resx">
+      <LastGenOutput>ContactResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MailResource.resx">
+      <LastGenOutput>MailResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\CompanyResource.resx">
+      <LastGenOutput>CompanyResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SettingResource.resx">
+      <LastGenOutput>SettingResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ReportResource.resx">
+      <LastGenOutput>ReportResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PlanResource.resx">
+      <LastGenOutput>PlanResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ServerResource.resx">
+      <LastGenOutput>ServerResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\CategoryResource.resx">
+      <LastGenOutput>CategoryResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ProjectResource.resx">
+      <LastGenOutput>ProjectResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\UserResource.resx">
+      <LastGenOutput>UserResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\AuthResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AuthResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

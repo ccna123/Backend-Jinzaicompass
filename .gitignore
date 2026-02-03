@@ -1,0 +1,10 @@
+.vs
+.vscode
+Build
+/SystemBrightSpotBE/obj
+/SystemBrightSpotBE/bin
+/SystemBrightSpotBE/appsettings.Development.json
+/SystemBrightSpotBE/appsettings.Production.json
+/SystemBrightSpotBE/appsettings.json
+/SystemBrightSpotBE/.vs
+/SystemBrightSpotBE/.vscode
