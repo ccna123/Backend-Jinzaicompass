@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
+using SystemBrightSpotBE.Helpers;
 using SystemBrightSpotBE.Providers;
 using SystemBrightSpotBE.Services.AuthService;
 using SystemBrightSpotBE.Services.CategoryService;
@@ -134,6 +135,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+var dbHost = builder.Configuration["DB_HOST"];
+var dbName = builder.Configuration["DB_NAME"];
+var dbUser = builder.Configuration["DB_USER"];
+var passwordParam = builder.Configuration["DB_PASSWORD_PARAM"];
+
+var dbPassword = await GetSSMHelper.GetSecureParameter(passwordParam);
+
+var conn =
+    $"Host={dbHost};Port=5432;Database={dbName};Username={dbUser};Password={dbPassword}";
+
 //=========================================
 // DEPENDENCY INJECTION
 //=========================================
@@ -144,7 +155,9 @@ builder.Services.AddControllers().AddJsonOptions(opts =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddDbContext<DataContext>();
+builder.Services.AddDbContext<DataContext>(
+    options => options.UseNpgsql(conn)
+);
 builder.Services.AddScoped<IExcelSeederService, ExcelSeederService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
