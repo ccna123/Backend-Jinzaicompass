@@ -45,6 +45,11 @@ services:
       AppSettings__UseSwagger: "true"
       AppSettings__UrlFrontend: https://jinzaicompass.com/#/auth/login
 
+      DB_HOST: localhost
+      DB_NAME: jinso_jhrm
+      DB_USER: postgres
+      DB_PASSWORD_PARAM: /jinzaicompass/db/password
+
       # =========================
       # AWS
       # =========================

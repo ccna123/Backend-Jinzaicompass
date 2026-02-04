@@ -141,29 +141,33 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //=========================================
 // DEPENDENCY INJECTION
 //=========================================
+// 1. Lấy thông tin cấu hình từ Env
+var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? builder.Configuration["DB_HOST"];
+var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? builder.Configuration["DB_NAME"];
+var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? builder.Configuration["DB_USER"];
+var passwordParam = Environment.GetEnvironmentVariable("DB_PASSWORD_PARAM") ?? builder.Configuration["DB_PASSWORD_PARAM"];
+
+// 2. Lấy Password từ SSM một cách tường minh
+var ssmClient = new AmazonSimpleSystemsManagementClient();
+var ssmResponse = await ssmClient.GetParameterAsync(new GetParameterRequest
+{
+    Name = passwordParam,
+    WithDecryption = true
+});
+var dbPassword = ssmResponse.Parameter.Value;
+
+// 3. Tạo chuỗi kết nối
+var connectionString = $"Host={dbHost};Port=5432;Database={dbName};Username={dbUser};Password={dbPassword}";
+Console.WriteLine("Database Connection String: " + connectionString);
+
+// 4. Cấu hình DbContext (Gọn gàng, không còn .Result nữa)
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    options.UseNpgsql(connectionString);
+});
 builder.Services.AddControllers().AddJsonOptions(opts =>
 {
     opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
-builder.Services.AddDbContext<DataContext>((sp, o) =>
-{
-    var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? builder.Configuration["DB_HOST"];
-    var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? builder.Configuration["DB_NAME"];
-    var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? builder.Configuration["DB_USER"];
-    var passwordParam = Environment.GetEnvironmentVariable("DB_PASSWORD_PARAM") ?? builder.Configuration["DB_PASSWORD_PARAM"];
-
-    var ssm = new AmazonSimpleSystemsManagementClient();
-
-    var password = ssm.GetParameterAsync(new GetParameterRequest
-    {
-        Name = passwordParam,
-        WithDecryption = true
-    }).Result.Parameter.Value;
-
-    var conn =
-        $"Host={dbHost};Port=5432;Database={dbName};Username={dbUser};Password={password}";
-
-    o.UseNpgsql(conn);
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
