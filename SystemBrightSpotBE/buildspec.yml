@@ -23,11 +23,11 @@ phases:
       - echo Updating Lambda code...
       - aws lambda update-function-code --function-name $LAMBDA_NAME --image-uri $ECR_REPOSITORY_URI:$IMAGE_TAG
 
-      # Chờ một lát để Lambda cập nhật xong code trước khi tạo version (tránh lỗi conflict)
-      - sleep 5
+      # ĐỢI cho đến khi Lambda cập nhật xong hoàn toàn (Xịn hơn sleep nhiều)
+      - echo "Waiting for function update to complete..."
+      - aws lambda wait function-updated --function-name $LAMBDA_NAME
 
       - echo Publishing new version...
-      # Lệnh này sẽ trả về số Version mới nhất vừa tạo
       - NEW_VERSION=$(aws lambda publish-version --function-name $LAMBDA_NAME --query 'Version' --output text)
       - echo "New Version is $NEW_VERSION"
 
