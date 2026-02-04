@@ -41,48 +41,6 @@ using SystemBrightSpotBE.Services.UserService;
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
 
-// =======================================================
-// SSM PASSWORD RETRIEVAL
-// =======================================================
-var ssmClient = new AmazonSimpleSystemsManagementClient();
-
-var dbHost = builder.Configuration["DB_HOST"];
-var dbName = builder.Configuration["DB_NAME"];
-var dbUser = builder.Configuration["DB_USER"];
-var passwordParam = builder.Configuration["DB_PASSWORD_PARAM"];
-
-string dbPassword;
-
-if (string.IsNullOrEmpty(passwordParam))
-{
-    Console.WriteLine("CRITICAL ERROR: DB_PASSWORD_PARAM is null or empty!");
-    foreach (System.Collections.IDictionary race in Environment.GetEnvironmentVariables())
-    {
-        Console.WriteLine($"{race.Keys} = {race.Values}");
-    }
-    throw new Exception("DB_PASSWORD_PARAM is missing from Environment Variables!");
-}
-
-Console.WriteLine($"[DEBUG] Fetching SSM Parameter: {passwordParam}");
-
-try
-{
-    var response = await ssmClient.GetParameterAsync(new GetParameterRequest
-    {
-        Name = passwordParam,
-        WithDecryption = true
-    });
-
-    dbPassword = response.Parameter.Value;
-}
-catch (ParameterNotFoundException)
-{
-    throw new Exception($"[Config Error] Missing SSM parameter: {passwordParam}");
-}
-
-var conn =
-    $"Host={dbHost};Port=5432;Database={dbName};Username={dbUser};Password={dbPassword}";
-
 //=========================================
 // CONFIGURATION CORS
 //=========================================
@@ -187,9 +145,26 @@ builder.Services.AddControllers().AddJsonOptions(opts =>
 {
     opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
-builder.Services.AddDbContext<DataContext>(
-    o => o.UseNpgsql(conn)
-);
+builder.Services.AddDbContext<DataContext>((sp, o) =>
+{
+    var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? builder.Configuration["DB_HOST"];
+    var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? builder.Configuration["DB_NAME"];
+    var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? builder.Configuration["DB_USER"];
+    var passwordParam = Environment.GetEnvironmentVariable("DB_PASSWORD_PARAM") ?? builder.Configuration["DB_PASSWORD_PARAM"];
+
+    var ssm = new AmazonSimpleSystemsManagementClient();
+
+    var password = ssm.GetParameterAsync(new GetParameterRequest
+    {
+        Name = passwordParam,
+        WithDecryption = true
+    }).Result.Parameter.Value;
+
+    var conn =
+        $"Host={dbHost};Port=5432;Database={dbName};Username={dbUser};Password={password}";
+
+    o.UseNpgsql(conn);
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddHttpContextAccessor();
