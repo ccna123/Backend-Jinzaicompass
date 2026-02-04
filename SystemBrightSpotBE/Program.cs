@@ -39,6 +39,7 @@ using SystemBrightSpotBE.Services.UserPlanService;
 using SystemBrightSpotBE.Services.UserService;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables();
 
 // =======================================================
 // SSM PASSWORD RETRIEVAL
@@ -51,6 +52,18 @@ var dbUser = builder.Configuration["DB_USER"];
 var passwordParam = builder.Configuration["DB_PASSWORD_PARAM"];
 
 string dbPassword;
+
+if (string.IsNullOrEmpty(passwordParam))
+{
+    Console.WriteLine("CRITICAL ERROR: DB_PASSWORD_PARAM is null or empty!");
+    foreach (System.Collections.IDictionary race in Environment.GetEnvironmentVariables())
+    {
+        Console.WriteLine($"{race.Keys} = {race.Values}");
+    }
+    throw new Exception("DB_PASSWORD_PARAM is missing from Environment Variables!");
+}
+
+Console.WriteLine($"[DEBUG] Fetching SSM Parameter: {passwordParam}");
 
 try
 {
