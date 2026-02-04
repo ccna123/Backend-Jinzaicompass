@@ -5,6 +5,7 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - ECR_SERVER=$(echo $ECR_REPOSITORY_URI | cut -d/ -f1)
+      - echo $ECR_SERVER
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_SERVER
       - IMAGE_TAG="v$CODEBUILD_BUILD_NUMBER"
   build:
