@@ -3,18 +3,36 @@ using Amazon.SimpleSystemsManagement.Model;
 namespace SystemBrightSpotBE.Helpers
 {
     public class GetSSMHelper
-{
-    public static async Task<string> GetSecureParameter(string name)
-{
-    var ssm = new AmazonSimpleSystemsManagementClient();
-
-    var res = await ssm.GetParameterAsync(new GetParameterRequest
     {
-        Name = name,
-        WithDecryption = true
-    });
+        private readonly IAmazonSimpleSystemsManagement _ssm;
 
-    return res.Parameter.Value;
-}
-}
+        public GetSSMHelper(IAmazonSimpleSystemsManagement ssm)
+        {
+            _ssm = ssm;
+        }
+
+        public async Task<string> GetSecureParameter(string name)
+        {
+            try
+            {
+                var response = await _ssm.GetParameterAsync(new GetParameterRequest
+                {
+                    Name = name,
+                    WithDecryption = true
+                });
+
+                return response.Parameter.Value;
+            }
+            catch (ParameterNotFoundException)
+            {
+                throw new Exception(
+                    $"[Config Error] SSM parameter not found: '{name}'. Check region or parameter name.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(
+                    $"[SSM Error] Failed to read parameter '{name}': {ex.Message}");
+            }
+        }
+    }
 }

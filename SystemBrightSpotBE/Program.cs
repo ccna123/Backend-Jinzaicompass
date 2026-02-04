@@ -5,6 +5,8 @@
 global using SystemBrightSpotBE.Base;
 global using SystemBrightSpotBE.Data;
 using Amazon.Lambda.AspNetCoreServer;
+using Amazon.SimpleSystemsManagement;
+using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +39,36 @@ using SystemBrightSpotBE.Services.UserPlanService;
 using SystemBrightSpotBE.Services.UserService;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// =======================================================
+// SSM PASSWORD RETRIEVAL
+// =======================================================
+var ssmClient = new AmazonSimpleSystemsManagementClient();
+
+var dbHost = builder.Configuration["DB_HOST"];
+var dbName = builder.Configuration["DB_NAME"];
+var dbUser = builder.Configuration["DB_USER"];
+var passwordParam = builder.Configuration["DB_PASSWORD_PARAM"];
+
+string dbPassword;
+
+try
+{
+    var response = await ssmClient.GetParameterAsync(new GetParameterRequest
+    {
+        Name = passwordParam,
+        WithDecryption = true
+    });
+
+    dbPassword = response.Parameter.Value;
+}
+catch (ParameterNotFoundException)
+{
+    throw new Exception($"[Config Error] Missing SSM parameter: {passwordParam}");
+}
+
+var conn =
+    $"Host={dbHost};Port=5432;Database={dbName};Username={dbUser};Password={dbPassword}";
 
 //=========================================
 // CONFIGURATION CORS
@@ -135,16 +167,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-var dbHost = builder.Configuration["DB_HOST"];
-var dbName = builder.Configuration["DB_NAME"];
-var dbUser = builder.Configuration["DB_USER"];
-var passwordParam = builder.Configuration["DB_PASSWORD_PARAM"];
-
-var dbPassword = await GetSSMHelper.GetSecureParameter(passwordParam);
-
-var conn =
-    $"Host={dbHost};Port=5432;Database={dbName};Username={dbUser};Password={dbPassword}";
-
 //=========================================
 // DEPENDENCY INJECTION
 //=========================================
@@ -152,12 +174,12 @@ builder.Services.AddControllers().AddJsonOptions(opts =>
 {
     opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+builder.Services.AddDbContext<DataContext>(
+    o => o.UseNpgsql(conn)
+);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddDbContext<DataContext>(
-    options => options.UseNpgsql(conn)
-);
 builder.Services.AddScoped<IExcelSeederService, ExcelSeederService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
