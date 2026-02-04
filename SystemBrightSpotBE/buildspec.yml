@@ -11,6 +11,7 @@ phases:
   build:
     commands:
       - echo Building the Docker image...
+      - cd SystemBrightSpotBE
       - docker build -t $ECR_REPOSITORY_URI:$IMAGE_TAG .
       - docker tag $ECR_REPOSITORY_URI:$IMAGE_TAG $ECR_REPOSITORY_URI:latest
   post_build:
