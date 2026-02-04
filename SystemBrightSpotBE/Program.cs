@@ -154,7 +154,7 @@ var ssmResponse = await ssmClient.GetParameterAsync(new GetParameterRequest
     Name = passwordParam,
     WithDecryption = true
 });
-var dbPassword = ssmResponse.Parameter.Value;
+var dbPassword = "12345678";
 
 // 3. Tạo chuỗi kết nối
 var connectionString = $"Host={dbHost};Port=5432;Database={dbName};Username={dbUser};Password={dbPassword}";
