@@ -285,6 +285,7 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseDefaultFiles();
+app.UseMiddleware<SystemBrightSpotBE.Middlewares.ExceptionLoggingMiddleware>();
 app.UseRouting();
 app.UseCors(MyAllowSpecificOrigins);
 app.UseSession();
