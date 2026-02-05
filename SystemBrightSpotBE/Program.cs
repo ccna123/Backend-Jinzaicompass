@@ -1,8 +1,4 @@
-﻿
-
-
-
-global using SystemBrightSpotBE.Base;
+﻿global using SystemBrightSpotBE.Base;
 global using SystemBrightSpotBE.Data;
 using Amazon.Lambda.AspNetCoreServer;
 using Amazon.SimpleSystemsManagement;
@@ -14,7 +10,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
-using SystemBrightSpotBE.Helpers;
 using SystemBrightSpotBE.Providers;
 using SystemBrightSpotBE.Services.AuthService;
 using SystemBrightSpotBE.Services.CategoryService;
