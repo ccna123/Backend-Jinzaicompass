@@ -930,18 +930,11 @@ namespace SystemBrightSpotBE.Controllers
                 var document = new SkillSheetDoc(data);
                 var stream = new MemoryStream();
                 document.GeneratePdf(stream);
-                var bytes = stream.ToArray();
-                var base64 = Convert.ToBase64String(bytes);
+                stream.Position = 0;
+                Response.ContentLength = stream.Length;
 
-                Response.Headers["Content-Disposition"] =
-                    $"attachment; filename*=UTF-8''{Uri.EscapeDataString(data.full_name + "_スキルシート.pdf")}";
+                return File(stream, "application/pdf", data.full_name + "_スキルシート.pdf");
 
-                return new ContentResult
-                {
-                    Content = base64,
-                    ContentType = "application/pdf",
-                    StatusCode = 200
-                };
             }
             catch (Exception ex)
             {
