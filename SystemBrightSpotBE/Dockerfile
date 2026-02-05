@@ -66,7 +66,13 @@ RUN dnf install -y \
     libxshmfence \
     alsa-lib \
     nss \
-    mesa-libgbm
+    mesa-libgbm \
+    google-noto-sans-cjk-fonts \
+    google-noto-emoji-fonts \
+    ipa-gothic-fonts \
+    ipa-mincho-fonts \
+    fontconfig \
+    && dnf clean all
 
 # # Copy code đã build vào image
 COPY --from=build /app/publish .
