@@ -928,12 +928,21 @@ namespace SystemBrightSpotBE.Controllers
                 QuestPDF.Settings.License = LicenseType.Community;
                 // Generate PDF
                 var document = new SkillSheetDoc(data);
-                var stream = new MemoryStream();
-                document.GeneratePdf(stream);
-                stream.Position = 0;
-                Response.ContentLength = stream.Length;
+                var bytes = document.GeneratePdf();
+                var base64 = Convert.ToBase64String(bytes);
 
-                return File(stream, "application/pdf", data.full_name + "_スキルシート.pdf");
+                return new JsonResult(new
+                {
+                    statusCode = 200,
+                    isBase64Encoded = true,
+                    headers = new Dictionary<string, string>
+        {
+            { "Content-Type", "application/pdf" },
+            { "Content-Disposition",
+              $"attachment; filename*=UTF-8''{Uri.EscapeDataString(data.full_name + "_スキルシート.pdf")}" }
+        },
+                    body = base64
+                });
 
             }
             catch (Exception ex)

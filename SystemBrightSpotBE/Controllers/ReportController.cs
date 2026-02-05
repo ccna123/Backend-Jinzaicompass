@@ -186,38 +186,40 @@ namespace SystemBrightSpotBE.Controllers
         {
             var report = await _reportService.FindById(id);
             if (report is null || report.deleted_at != null)
-            {
-                return JJsonResponse(StatusCodes.Status404NotFound, Message: ApiResource.ReportNotFound);
-            }
+                return NotFound();
 
             bool hasPermissionView = await _reportService.HasPermisstionView(id);
             if (!hasPermissionView)
-            {
-                return JJsonResponse(StatusCodes.Status403Forbidden, ErrorMessage: ServerResource.Forbidden);
-            }
-
-            var userAgent = Request.Headers["User-Agent"].ToString();
+                return Forbid();
 
             try
             {
                 var data = await _reportService.DowloadPDF(id);
-                var pdfBytes = await _reportService.ConvertHtmlToPDF(data);
-                var fileName = $"{id}_レポート_{data.date:yyyyMMdd}.pdf";
-                using var stream = new MemoryStream(pdfBytes);
-                stream.Position = 0;
 
-                Response.ContentLength = pdfBytes.Length;
-                _log.Info($"[PDF] User-Agent: {userAgent}");
-                return File(stream, "application/pdf", fileName);
+                var pdfBytes = await _reportService.ConvertHtmlToPDF(data);
+
+                var fileName = $"{id}_レポート_{data.date:yyyyMMdd}.pdf";
+
+                var base64 = Convert.ToBase64String(pdfBytes);
+
+                return new JsonResult(new
+                {
+                    statusCode = 200,
+                    isBase64Encoded = true,
+                    headers = new Dictionary<string, string>
+            {
+                { "Content-Type", "application/pdf" },
+                { "Content-Disposition",
+                    $"attachment; filename*=UTF-8''{Uri.EscapeDataString(fileName)}" }
+            },
+                    body = base64
+                });
             }
             catch (Exception ex)
             {
                 _log.Error(ex.ToString());
-                return JJsonResponse(StatusCodes.Status500InternalServerError,
-                                     ErrorMessage: ServerResource.InternalServerError);
+                return StatusCode(500);
             }
         }
-
-
     }
 }
