@@ -25,6 +25,7 @@ namespace SystemBrightSpotBE.Data
                     options.UseNpgsql(connectionString);
                 }
             }
+
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 

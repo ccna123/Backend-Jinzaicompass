@@ -8,6 +8,7 @@ using log4net;
 using Microsoft.AspNetCore.Mvc;
 using SystemBrightSpotBE.Data;
 using SystemBrightSpotBE.Resources;
+using SystemBrightSpotBE.Services.SettingService;
 using System.Linq;
 
 namespace SystemBrightSpotBE.Controllers
@@ -17,10 +18,12 @@ namespace SystemBrightSpotBE.Controllers
     public class HealthController : BaseController
     {
         private readonly ILog _log;
+
         private readonly DataContext _context;
         private readonly IConfiguration _configuration;
 
         public HealthController(
+            ISettingService settingService,
             DataContext context,
             IConfiguration configuration
         )
@@ -119,7 +122,7 @@ namespace SystemBrightSpotBE.Controllers
 
         private async Task<string?> CheckSqsAsync()
         {
-            string regionName = (_configuration.GetSection("SQS:SystemName").Value ?? Environment.GetEnvironmentVariable("AWS_REGION") ?? String.Empty).Trim();
+            string regionName = _configuration.GetSection("SQS:SystemName").Value ?? String.Empty;
             string accessKey = _configuration.GetSection("AWS:AccessKey").Value ?? String.Empty;
             string secretKey = _configuration.GetSection("AWS:SecretKey").Value ?? String.Empty;
 
