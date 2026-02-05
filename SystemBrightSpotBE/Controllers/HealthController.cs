@@ -78,7 +78,7 @@ namespace SystemBrightSpotBE.Controllers
 
         private async Task<string?> CheckS3Async()
         {
-            string regionName = _configuration.GetSection("AWS:Region").Value ?? String.Empty;
+            string regionName = (_configuration.GetSection("AWS:Region").Value ?? Environment.GetEnvironmentVariable("AWS_REGION") ?? String.Empty).Trim();
             string bucketName = _configuration.GetSection("AWS:BucketName").Value ?? String.Empty;
             string bucketNamePdf = _configuration.GetSection("AWS:BucketNameforPDF").Value ?? String.Empty;
             string accessKey = _configuration.GetSection("AWS:AccessKey").Value ?? String.Empty;

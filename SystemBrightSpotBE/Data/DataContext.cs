@@ -17,7 +17,6 @@ namespace SystemBrightSpotBE.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseNpgsql(Configuration.GetConnectionString("WebApiDatabase"));
             if (!options.IsConfigured)
             {
                 var connectionString = Configuration.GetConnectionString("WebApiDatabase");
