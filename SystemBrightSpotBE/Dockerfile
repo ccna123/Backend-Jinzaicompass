@@ -14,26 +14,26 @@ RUN dotnet publish "SystemBrightSpotBE.csproj" -c Release -o /app/publish
 # WORKDIR /app
 
 # # # Cài đặt các thư viện cần thiết để chạy Chrome (headless)
-# RUN dnf install -y \
-#     atk \
-#     cups-libs \
-#     gtk3 \
-#     libXcomposite \
-#     libXcursor \
-#     libXdamage \
-#     libXext \
-#     libXi \
-#     libXrandr \
-#     libXScrnSaver \
-#     libXtst \
-#     pango \
-#     at-spi2-atk \
-#     libdrm \
-#     libgbm \
-#     libxshmfence \
-#     alsa-lib \
-#     nss \
-#     mesa-libgbm
+# RUN apt-get update && apt-get install -y \
+#     libatk-bridge2.0-0 \
+#     libcups2 \
+#     libgtk-3-0 \
+#     libxcomposite1 \
+#     libxcursor1 \
+#     libxdamage1 \
+#     libxext6 \
+#     libxi6 \
+#     libxrandr2 \
+#     libxss1 \
+#     libxtst6 \
+#     libpango-1.0-0 \
+#     libdrm2 \
+#     libgbm1 \
+#     libxshmfence1 \
+#     libasound2 \
+#     libnss3 \
+#     && rm -rf /var/lib/apt/lists/*
+
 
 # # # Copy code đã build vào image
 # COPY --from=build /app/publish .
