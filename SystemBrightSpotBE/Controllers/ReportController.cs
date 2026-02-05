@@ -204,13 +204,10 @@ namespace SystemBrightSpotBE.Controllers
                 var pdfBytes = await _reportService.ConvertHtmlToPDF(data);
                 var fileName = $"{id}_レポート_{data.date:yyyyMMdd}.pdf";
 
-                var stream = new MemoryStream(pdfBytes);
-                stream.Position = 0;
-
                 Response.Headers["Content-Disposition"] =
                     $"attachment; filename*=UTF-8''{Uri.EscapeDataString(fileName)}";
                 _log.Info($"[PDF] User-Agent: {userAgent}");
-                return new FileStreamResult(stream, "application/pdf");
+                return File(pdfBytes, "application/pdf", fileName);
             }
             catch (Exception ex)
             {
