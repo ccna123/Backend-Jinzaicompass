@@ -256,7 +256,7 @@ namespace SystemBrightSpotBE.Controllers
             {
                 return JJsonResponse(StatusCodes.Status400BadRequest, ErrorMessage: ServerResource.BadRequest, ErrorDetails: ModelState);
             }
-           
+
             var status = await _permissionService.checkAccessPermissionAsync(id);
             if (!status)
             {
@@ -930,9 +930,18 @@ namespace SystemBrightSpotBE.Controllers
                 var document = new SkillSheetDoc(data);
                 var stream = new MemoryStream();
                 document.GeneratePdf(stream);
-                stream.Position = 0;
+                var bytes = stream.ToArray();
+                var base64 = Convert.ToBase64String(bytes);
 
-                return File(stream, "application/pdf", data.full_name + "_スキルシート.pdf");
+                Response.Headers["Content-Disposition"] =
+                    $"attachment; filename*=UTF-8''{Uri.EscapeDataString(data.full_name + "_スキルシート.pdf")}";
+
+                return new ContentResult
+                {
+                    Content = base64,
+                    ContentType = "application/pdf",
+                    StatusCode = 200
+                };
             }
             catch (Exception ex)
             {
