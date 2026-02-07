@@ -1044,11 +1044,19 @@ namespace SystemBrightSpotBE.Controllers
             }
             catch (OperationCanceledException ex)
             {
+                var isRequestAborted = HttpContext.RequestAborted.IsCancellationRequested;
+                var cancelReason = isRequestAborted ? "request_aborted" : "s3_upload_timeout";
+                var statusCode = StatusCodes.Status504GatewayTimeout;
+                var errorMessage = isRequestAborted ? "Request was aborted by client" : "S3 upload timeout";
                 Console.WriteLine("===== ERROR =====");
-                Console.WriteLine($"S3 upload timeout while creating skill sheet for user {id}: {ex}");
+                Console.WriteLine($"isRequestAborted: {isRequestAborted}");
+                Console.WriteLine($"cancelReason: {cancelReason}");
+                Console.WriteLine($"statusCode: {statusCode}");
+                Console.WriteLine($"errorMessage: {errorMessage}");
                 Console.WriteLine("=================");
-                _log.Error($"S3 upload timeout while creating skill sheet for user {id}: {ex}");
-                return JJsonResponse(StatusCodes.Status504GatewayTimeout, ErrorMessage: "Gateway Timeout");
+
+                _log.Error($"GetSkillSheet upload canceled. userId={id}, reason={cancelReason}, statusCode={statusCode}, requestAborted={isRequestAborted}, exception={ex}");
+                return JJsonResponse(statusCode, ErrorMessage: errorMessage);
             }
             catch (AmazonS3Exception ex)
             {
