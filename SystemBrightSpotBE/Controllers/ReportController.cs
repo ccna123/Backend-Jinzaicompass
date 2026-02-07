@@ -195,98 +195,68 @@ namespace SystemBrightSpotBE.Controllers
 
         [Authorize]
         [HttpGet("{id}/pdf")]
-        public async Task<IActionResult> DowloadPDF(long id)
+        public async Task<IActionResult> RequestPdfDownload(long id)
         {
+            // 1. Kiểm tra report tồn tại và chưa bị xóa
             var report = await _reportService.FindById(id);
-            if (report is null || report.deleted_at != null)
+            if (report == null || report.deleted_at != null)
                 return NotFound();
 
+            // 2. Kiểm tra quyền xem
             bool hasPermissionView = await _reportService.HasPermisstionView(id);
             if (!hasPermissionView)
                 return Forbid();
 
             try
             {
-                Console.WriteLine("Step 1: load data");
-                var data = await _reportService.DowloadPDF(id);
+                Console.WriteLine($"Request download PDF for report ID: {id}");
 
-                Console.WriteLine("Step 2: generate pdf");
-                var pdfBytes = await _reportService.ConvertHtmlToPDF(data);
+                // 3. Gọi service mới: gửi SQS + lưu DynamoDB pending
+                var sessionId = await _reportService.RequestReportDownloadAsync(id);
 
-                var fileName = $"{id}_レポート_{data.date:yyyyMMdd}.pdf";
-                var key = $"app/pdf/{Guid.NewGuid()}_{fileName}";
-
-                using var stream = new MemoryStream(pdfBytes);
-                using var cts = CancellationTokenSource.CreateLinkedTokenSource(HttpContext.RequestAborted);
-                cts.CancelAfter(TimeSpan.FromSeconds(20));
-
-                Console.WriteLine("Step 3: upload to s3");
-
-                await _s3.PutObjectAsync(new PutObjectRequest
-                {
-                    BucketName = "jinzaicompass-pdf",
-                    Key = key,
-                    InputStream = stream,
-                    ContentType = "application/pdf",
-                    AutoCloseStream = false,
-                    UseChunkEncoding = false,
-                    Headers =
-            {
-                ContentDisposition = $"attachment; filename*=UTF-8''{Uri.EscapeDataString(fileName)}"
-            }
-                }, cts.Token);
-
-                Console.WriteLine("Step 4: generate presigned url");
-
-                var presignRequest = new GetPreSignedUrlRequest
-                {
-                    BucketName = "jinzaicompass-pdf",
-                    Key = key,
-                    Verb = HttpVerb.GET,
-                    Expires = DateTime.UtcNow.AddMinutes(10)
-                };
-
-                var url = _s3.GetPreSignedURL(presignRequest);
-
-                Console.WriteLine("Step 5: return url");
-
+                // 4. Trả về session_id ngay lập tức (frontend sẽ poll status)
                 return Ok(new
                 {
-                    url = url
+                    sessionId,
+                    message = "Yêu cầu tải PDF đã được gửi. Vui lòng chờ xử lý..."
                 });
-            }
-            catch (OperationCanceledException ex)
-            {
-                var isRequestAborted = HttpContext.RequestAborted.IsCancellationRequested;
-                var cancelReason = isRequestAborted ? "request_aborted" : "s3_upload_timeout";
-
-                Console.WriteLine("===== ERROR =====");
-                Console.WriteLine($"cancelReason: {cancelReason}");
-                Console.WriteLine(ex.ToString());
-                Console.WriteLine("=================");
-
-                _log.Error($"DowloadPDF upload canceled. reportId={id}, reason={cancelReason}, exception={ex}");
-
-                return StatusCode(StatusCodes.Status504GatewayTimeout, "Upload timeout");
-            }
-            catch (AmazonS3Exception ex)
-            {
-                Console.WriteLine("===== S3 ERROR =====");
-                Console.WriteLine(ex.ToString());
-                Console.WriteLine("====================");
-
-                _log.Error($"S3 upload failed. reportId={id}, ErrorCode={ex.ErrorCode}, StatusCode={ex.StatusCode}, RequestId={ex.RequestId}. {ex}");
-
-                return StatusCode(StatusCodes.Status502BadGateway, "S3 upload failed");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("===== ERROR =====");
+                Console.WriteLine("===== ERROR in RequestPdfDownload =====");
                 Console.WriteLine(ex.ToString());
-                Console.WriteLine("=================");
+                Console.WriteLine("======================================");
 
-                _log.Error(ex.ToString());
+                _log.Error($"RequestPdfDownload failed for reportId={id}. Error: {ex.Message}", ex);
 
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [Authorize]
+        [HttpGet("report-status/{sessionId}")]
+        public async Task<IActionResult> GetReportStatus(string sessionId)
+        {
+            try
+            {
+                // Giả sử bạn có method trong service để lấy từ DynamoDB
+                var (status, url, updatedAt) = await _reportService.GetReportDownloadStatusAsync(sessionId);
+                if (status == null)
+                    return NotFound();
+
+                return Ok(new
+                {
+                    status,
+                    url,
+                    updatedAt
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("===== ERROR in RequestPdfDownload =====");
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine("======================================");
+                _log.Error($"GetReportStatus failed for sessionId={sessionId}. Error: {ex.Message}", ex);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

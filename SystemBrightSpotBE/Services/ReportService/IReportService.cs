@@ -12,7 +12,7 @@ namespace SystemBrightSpotBE.Services.ReportService
         Task<ReportDto?> FindById(long id);
         Task<bool> HasPermisstion(long id);
         Task<bool> HasPermisstionView(long id);
-        Task<ReportPDFDto> DowloadPDF(long id);
-        Task<byte[]> ConvertHtmlToPDF(ReportPDFDto data);
+        Task<String> RequestReportDownloadAsync(long id);
+        Task<(string Status, string? Url, string? UpdatedAt)> GetReportDownloadStatusAsync(string sessionId);
     }
 }

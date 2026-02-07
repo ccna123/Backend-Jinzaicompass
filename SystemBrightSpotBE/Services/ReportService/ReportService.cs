@@ -1,3 +1,7 @@
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.Model;
+using Amazon.SQS;
+using Amazon.SQS.Model;
 using AutoMapper;
 using HtmlAgilityPack;
 using log4net;
@@ -6,6 +10,7 @@ using Microsoft.Playwright;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using System.Text.Json;
 using SystemBrightSpotBE.Base.Pagination;
 using SystemBrightSpotBE.Dtos.Report;
 using SystemBrightSpotBE.Enums;
@@ -26,12 +31,19 @@ namespace SystemBrightSpotBE.Services.ReportService
         private readonly IAuthService _authService;
         private readonly IUserService _userService;
         private readonly INotificationService _notificationService;
+        private readonly IAmazonSQS _sqsClient;
+        private readonly IAmazonDynamoDB _dynamoDbClient;
+        private readonly string _sqsQueueUrl;
+        private readonly string _dynamoTableName;
         public ReportService(
             DataContext context,
             IMapper mapper,
             IAuthService authService,
             IUserService userService,
-            INotificationService notificationService
+            INotificationService notificationService,
+            IAmazonSQS sqsClient,              
+            IAmazonDynamoDB dynamoDbClient,    
+            IConfiguration configuration       
         )
         {
             _context = context;
@@ -39,7 +51,17 @@ namespace SystemBrightSpotBE.Services.ReportService
             _log = LogManager.GetLogger(typeof(ReportService));
             _authService = authService;
             _userService = userService;
+            
             _notificationService = notificationService;
+            _sqsClient = sqsClient;
+            _dynamoDbClient = dynamoDbClient;
+
+            _sqsQueueUrl = Environment.GetEnvironmentVariable("SQS_QUEUE_URL")
+            ?? configuration["AWS:SQS:QueueUrl"]
+            ?? throw new InvalidOperationException("Thiếu cấu hình SQS_QUEUE_URL (cả env var và appsettings đều không có)");
+
+            _dynamoTableName = Environment.GetEnvironmentVariable("DYNAMODB_TABLE_NAME")
+                ?? "ReportDownloadStatus"; // fallback nếu không set
         }
 
         public async Task<PagedResponse<List<ReportDto>>> Search(ListReportParamDto request)
@@ -613,310 +635,92 @@ namespace SystemBrightSpotBE.Services.ReportService
             return false;
         }
 
-        public async Task<ReportPDFDto> DowloadPDF(long id)
+        public async Task<string> RequestReportDownloadAsync(long reportId)
         {
-            var report = await FindById(id);
-            var reportPDF = new ReportPDFDto();
-
-            if (report != null)
+            // 1. Kiểm tra quyền xem report
+            if (!await HasPermisstionView(reportId))
             {
-                reportPDF.title = report.title;
-                reportPDF.content = report.content;
-                reportPDF.date = report.date;
-                reportPDF.report_type_name = report.report_type_name;
-                reportPDF.user_fullname = report.user_fullname;
-                // Convert department, division, group, user
-                if (report.is_public == true)
-                {
-                    reportPDF.target_all = "公開";
-                }
-                else
-                {
-                    List<string> targetName = new List<string>();
-
-                    if (report.departments.Any())
-                    {
-                        targetName.AddRange(report.departments.Select(d => d.department_name));
-                    }
-
-                    if (report.divisions.Any())
-                    {
-                        targetName.AddRange(report.divisions.Select(d => d.division_name));
-                    }
-
-                    if (report.groups.Any())
-                    {
-                        targetName.AddRange(report.groups.Select(g => g.group_name));
-                    }
-
-                    if (report.users.Any())
-                    {
-                        targetName.AddRange(report.users.Select(u => u.user_fullname));
-                    }
-
-                    reportPDF.target_all = String.Join("、", targetName);
-                }
+                throw new Exception("Bạn không có quyền tải báo cáo này");
             }
 
-            return reportPDF;
-        }
-
-        public async Task<byte[]> ConvertHtmlToPDF(ReportPDFDto data)
-        {
-            string html = PageHTML(data);
-
-            using var playwright = await Playwright.CreateAsync();
-           
-            await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+            // 2. Lấy dữ liệu report
+            var reportDto = await FindById(reportId);
+            if (reportDto == null)
             {
-                Headless = true,
-                Args = new[] { "--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu" }
-            });
-
-            var context = await browser.NewContextAsync();
-            var page = await context.NewPageAsync();
-            await page.SetContentAsync(html, new PageSetContentOptions { WaitUntil = WaitUntilState.NetworkIdle });
-
-            var pdfBytes = await page.PdfAsync(new PagePdfOptions
-            {
-                Format = "A4",
-                PrintBackground = true,
-                Margin = new Margin { Top = "15mm", Bottom = "15mm", Left = "10mm", Right = "10mm" }
-            });
-
-            return pdfBytes;
-        }
-
-        private string ParseContentToHTML(string contentHtml)
-        {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(contentHtml);
-
-
-            var nodes = doc.DocumentNode.SelectNodes("//*");
-            if (nodes != null)
-            {
-                var tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-                {
-                    "p", "pre", "h1", "h2", "h3", "h4", "h5", "h6"
-                };
-
-                var unUsedTags = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-                {
-                    "iframe", "video", "embed", "script"
-                };
-
-                int orderCounter = 0;
-
-                foreach (var node in nodes)
-                {
-                    // Remove unwanted tags
-                    if (unUsedTags.Contains(node.Name))
-                    {
-                        node.Remove();
-                        continue;
-                    }
-
-                    var cls = node.GetAttributeValue("class", "");
-                    var style = node.GetAttributeValue("style", "");
-
-                    // Default style
-                    if (tags.Contains(node.Name))
-                    {
-                        style += "margin: 0; padding: 0;";
-                    }
-
-                    if (node.Name.Equals("p", StringComparison.OrdinalIgnoreCase))
-                    {
-                        style += "min-height: 18px;";
-                    }
-
-                    if (node.Name.Equals("h1", StringComparison.OrdinalIgnoreCase))
-                    {
-                        style += "font-size: 32px;";
-                    }
-
-                    if (node.Name.Equals("h2", StringComparison.OrdinalIgnoreCase))
-                    {
-                        style += "font-size: 24px;";
-                    }
-
-                    if (node.Name.Equals("li", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var dataList = node.GetAttributeValue("data-list", "");
-
-                        if (dataList == "bullet")
-                        { 
-                            style += "list-style-type: disc;";
-                        }
-                        else if (dataList == "ordered")
-                        {
-                            orderCounter++;
-                            node.SetAttributeValue("value", orderCounter.ToString());
-                            style += "list-style-type: decimal; list-style-position: outside;";
-                        }
-
-                        if (!string.IsNullOrEmpty(style.Trim()))
-                        {
-                            node.SetAttributeValue("style", style.Trim());
-                        }
-                        node.Attributes.Remove("data-list");
-                    }
-
-                    // Align
-                    if (cls.Contains("ql-align-left"))
-                    {
-                        style += "text-align: left;";
-                    }
-                    if (cls.Contains("ql-align-center"))
-                    {
-                        style += "text-align: center;";
-                    }
-                    if (cls.Contains("ql-align-right"))
-                    {
-                        style += "text-align: right;";
-                    }
-                    if (cls.Contains("ql-align-justify"))
-                    {
-                        style += "text-align: justify;";
-                    }
-
-                    // Size
-                    if (cls.Contains("ql-size-small"))
-                    {
-                        style += "font-size: 12px;";
-                    }
-                    if (cls.Contains("ql-size-large"))
-                    {
-                        style += "font-size: 24px;";
-                    }
-                    if (cls.Contains("ql-size-huge"))
-                    {
-                        style += "font-size: 40px; font-weight: bold;";
-                    }
-
-                    // Padding left
-                    if (cls.Contains("ql-indent-1"))
-                    {
-                        style += "padding-left: 3em;";
-                    }
-                    if (cls.Contains("ql-indent-2"))
-                    {
-                        style += "padding-left: 6em;";
-                    }
-                    if (cls.Contains("ql-indent-3"))
-                    {
-                        style += "padding-left: 9em;";
-                    }
-                    if (cls.Contains("ql-indent-4"))
-                    {
-                        style += "padding-left: 12em;";
-                    }
-                    if (cls.Contains("ql-indent-5"))
-                    {
-                        style += "padding-left: 15em;";
-                    }
-                    if (cls.Contains("ql-indent-6"))
-                    {
-                        style += "padding-left: 18em;";
-                    }
-                    if (cls.Contains("ql-indent-7"))
-                    {
-                        style += "padding-left: 21em;";
-                    }
-                    if (cls.Contains("ql-indent-8"))
-                    {
-                        style += "padding-left: 24em;";
-                    }
-
-                    // Set style
-                    if (!string.IsNullOrEmpty(style.Trim()))
-                    {
-                        node.SetAttributeValue("style", style.Trim());
-                    }
-
-                    if (!string.IsNullOrEmpty(cls))
-                    {
-                        node.Attributes.Remove("class");
-                    }
-                }
+                throw new Exception("Report không tồn tại");
             }
 
-            return doc.DocumentNode.OuterHtml;
+            // 3. Tạo session_id và report_id mới (cho worker xử lý)
+            var sessionId = Guid.NewGuid().ToString("N"); // hoặc "session-" + Guid.NewGuid().ToString("N")
+            var workerReportId = "report-" + DateTime.UtcNow.ToString("yyyyMMdd") + "-" + Guid.NewGuid().ToString("N").Substring(0, 6);
+
+            // 4. Chuẩn bị message cho SQS
+            var message = new
+            {
+                report_id = workerReportId,
+                session_id = sessionId,
+                content = reportDto.content ?? "",
+                title = reportDto.title,
+                is_public = reportDto.is_public,
+                report_type_name = reportDto.report_type_name,
+                user_fullname = reportDto.user_fullname,
+                date = reportDto.date.ToString("yyyy-MM-ddTHH:mm:ss"),
+                departments = reportDto.departments,
+                divisions = reportDto.divisions,
+                groups = reportDto.groups,
+                users = reportDto.users
+            };
+
+            var messageJson = JsonSerializer.Serialize(message);
+
+            // 5. Gửi message vào SQS
+            await _sqsClient.SendMessageAsync(new SendMessageRequest
+            {
+                QueueUrl = _sqsQueueUrl,
+                MessageBody = messageJson
+            });
+
+            // 6. Lưu trạng thái ban đầu vào DynamoDB
+            await _dynamoDbClient.PutItemAsync(new PutItemRequest
+            {
+                TableName = _dynamoTableName,
+                Item = new Dictionary<string, AttributeValue>
+                {
+                    { "session_id", new AttributeValue { S = sessionId } },
+                    { "status", new AttributeValue { S = "pending" } },
+                    { "url", new AttributeValue { S = null } },
+                    { "created_at", new AttributeValue { S = DateTime.UtcNow.ToString("o") } },
+                    { "report_id", new AttributeValue { S = reportId.ToString() } } // optional
+                }
+            });
+
+            _log.Info($"Request download report {reportId} - session {sessionId} đã gửi SQS và lưu DynamoDB");
+
+            // 7. Trả session_id về frontend để poll
+            return sessionId;
         }
 
-        private string PageHTML(ReportPDFDto data)
+        public async Task<(string Status, string? Url, string? UpdatedAt)> GetReportDownloadStatusAsync(string sessionId)
         {
-            var parseContent = ParseContentToHTML(data.content);
+            var response = await _dynamoDbClient.GetItemAsync(new GetItemRequest
+            {
+                TableName = _dynamoTableName,
+                Key = new Dictionary<string, AttributeValue>
+        {
+            { "session_id", new AttributeValue { S = sessionId } }
+        }
+            });
 
-            var htmlString = $@"
-                <!DOCTYPE html>
-                <html lang='ja'>
-                   <head>
-                      <meta charset='UTF-8'>
-                      <style>
-                         body {{
-                             font-family: 'Noto Sans JP', sans-serif;
-                             margin: 0;
-                             padding: 0;
-                             font-size: 12pt;
-                         }}
-                         .header-table {{
-                             width: 100%;
-                             border-collapse: collapse;
-                             margin-bottom: 10px;
-                         }}
-                         .header-table th {{
-                             background-color: #d9e9f3;
-                             text-align: left;
-                             padding: 6px 10px;
-                             font-weight: normal;
-                             white-space: nowrap;
-                             width: 80px;
-                         }}
-                         .header-table td {{
-                             padding: 6px 10px;
-                             background-color: #F3F3F3;
-                         }}
-                         .content-title {{
-                             margin-top: 30px;
-                             padding: 6px 10px;
-                             background-color: #D2E1E7;
-                         }}
-                         .content {{
-                             padding: 20px;
-                             background-color: #FBFBFB;
-                             border: 1px solid #BFBFBF;
-                             border-top: none;
-                             min-height: 200px;
-                         }}
-                      </style>
-                   </head>
-                   <body>
-                      <table class='header-table'>
-                         <tr>
-                            <th>起票者</th>
-                            <td>{data.user_fullname}</td>
-                            <th>起票日</th>
-                            <td>{data.date.ToString("yyyy/MM/dd")}</td>
-                            <th>タイプ</th>
-                            <td>{data.report_type_name}</td>
-                         </tr>
-                      </table>
-                      <table class='header-table'>
-                         <tr>
-                            <th>閲覧者</th>
-                            <td colspan='5'>{data.target_all}</td>
-                         </tr>
-                      </table>
-                      <div class='content-title'>内容</div>
-                      <div class='content'>
-                         {parseContent}
-                      </div>
-                   </body>
-                </html>";
+            if (response.Item == null || !response.Item.Any())
+                return ("not_found", null, null);
 
-            return htmlString;
+            var item = response.Item;
+            var status = item.ContainsKey("status") ? item["status"].S : "unknown";
+            var url = item.ContainsKey("url") ? item["url"].S : null;
+            var updatedAt = item.ContainsKey("updated_at") ? item["updated_at"].S : null;
+
+            return (status, url, updatedAt);
         }
     }
+
 }
