@@ -1,3 +1,5 @@
+using Amazon.S3;
+using Amazon.S3.Model;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +8,6 @@ using SystemBrightSpotBE.Enums;
 using SystemBrightSpotBE.Resources;
 using SystemBrightSpotBE.Services.CategoryService;
 using SystemBrightSpotBE.Services.ReportService;
-using SystemBrightSpotBE.Services.S3Service;
 
 namespace SystemBrightSpotBE.Controllers
 {
@@ -17,18 +18,18 @@ namespace SystemBrightSpotBE.Controllers
         private readonly ILog _log;
         private readonly IReportService _reportService;
         private readonly ICategoryService _categoryService;
-        private readonly IS3Service _s3Service;
+        private readonly IAmazonS3 _s3;
 
         public ReportController(
             IReportService reportService,
             ICategoryService categoryService,
-            IS3Service s3Service
+            IAmazonS3 s3
         )
         {
             _log = LogManager.GetLogger(typeof(ReportController));
             _reportService = reportService;
             _categoryService = categoryService;
-            _s3Service = s3Service;
+            _s3 = s3;
         }
 
         [Authorize]
@@ -206,35 +207,89 @@ namespace SystemBrightSpotBE.Controllers
 
             try
             {
+                Console.WriteLine("Step 1: load data");
                 var data = await _reportService.DowloadPDF(id);
 
+                Console.WriteLine("Step 2: generate pdf");
                 var pdfBytes = await _reportService.ConvertHtmlToPDF(data);
 
                 var fileName = $"{id}_レポート_{data.date:yyyyMMdd}.pdf";
+                var key = $"app/pdf/{Guid.NewGuid()}_{fileName}";
 
-                var base64 = Convert.ToBase64String(pdfBytes);
+                using var stream = new MemoryStream(pdfBytes);
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(HttpContext.RequestAborted);
+                cts.CancelAfter(TimeSpan.FromSeconds(20));
 
-                return new JsonResult(new
+                Console.WriteLine("Step 3: upload to s3");
+
+                await _s3.PutObjectAsync(new PutObjectRequest
                 {
-                    statusCode = 200,
-                    isBase64Encoded = true,
-                    headers = new Dictionary<string, string>
+                    BucketName = "jinzaicompass-pdf",
+                    Key = key,
+                    InputStream = stream,
+                    ContentType = "application/pdf",
+                    AutoCloseStream = false,
+                    UseChunkEncoding = false,
+                    Headers =
             {
-                { "Content-Type", "application/pdf" },
-                { "Content-Disposition",
-                    $"attachment; filename*=UTF-8''{Uri.EscapeDataString(fileName)}" }
-            },
-                    body = base64
+                ContentDisposition = $"attachment; filename*=UTF-8''{Uri.EscapeDataString(fileName)}"
+            }
+                }, cts.Token);
+
+                Console.WriteLine("Step 4: generate presigned url");
+
+                var presignRequest = new GetPreSignedUrlRequest
+                {
+                    BucketName = "jinzaicompass-pdf",
+                    Key = key,
+                    Verb = HttpVerb.GET,
+                    Expires = DateTime.UtcNow.AddMinutes(10)
+                };
+
+                var url = _s3.GetPreSignedURL(presignRequest);
+
+                Console.WriteLine("Step 5: return url");
+
+                return Ok(new
+                {
+                    url = url
                 });
+            }
+            catch (OperationCanceledException ex)
+            {
+                var isRequestAborted = HttpContext.RequestAborted.IsCancellationRequested;
+                var cancelReason = isRequestAborted ? "request_aborted" : "s3_upload_timeout";
+
+                Console.WriteLine("===== ERROR =====");
+                Console.WriteLine($"cancelReason: {cancelReason}");
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine("=================");
+
+                _log.Error($"DowloadPDF upload canceled. reportId={id}, reason={cancelReason}, exception={ex}");
+
+                return StatusCode(StatusCodes.Status504GatewayTimeout, "Upload timeout");
+            }
+            catch (AmazonS3Exception ex)
+            {
+                Console.WriteLine("===== S3 ERROR =====");
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine("====================");
+
+                _log.Error($"S3 upload failed. reportId={id}, ErrorCode={ex.ErrorCode}, StatusCode={ex.StatusCode}, RequestId={ex.RequestId}. {ex}");
+
+                return StatusCode(StatusCodes.Status502BadGateway, "S3 upload failed");
             }
             catch (Exception ex)
             {
                 Console.WriteLine("===== ERROR =====");
                 Console.WriteLine(ex.ToString());
                 Console.WriteLine("=================");
+
                 _log.Error(ex.ToString());
-                return StatusCode(500);
+
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
     }
 }
