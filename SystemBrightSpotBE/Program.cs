@@ -1,5 +1,6 @@
 ﻿global using SystemBrightSpotBE.Base;
 global using SystemBrightSpotBE.Data;
+using Amazon.Extensions.NETCore.Setup;
 using Amazon.Lambda.AspNetCoreServer;
 using Amazon.S3;
 using Amazon.SimpleSystemsManagement;
@@ -36,6 +37,10 @@ using SystemBrightSpotBE.Services.UserService;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
+var awsOptions = new AWSOptions
+{
+    Region = Amazon.RegionEndpoint.APNortheast1
+};
 
 //=========================================
 // CONFIGURATION CORS
@@ -165,6 +170,7 @@ builder.Services.AddControllers().AddJsonOptions(opts =>
 {
     opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+builder.Services.AddDefaultAWSOptions(awsOptions);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAWSService<IAmazonS3>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
