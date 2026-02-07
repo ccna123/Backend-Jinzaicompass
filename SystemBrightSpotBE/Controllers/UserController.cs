@@ -1006,6 +1006,8 @@ namespace SystemBrightSpotBE.Controllers
                 var key = $"app/pdf/{Guid.NewGuid()}_{fileName}";
 
                 using var stream = new MemoryStream(bytes);
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(HttpContext.RequestAborted);
+                cts.CancelAfter(TimeSpan.FromSeconds(15));
 
                 await _s3.PutObjectAsync(new PutObjectRequest
                 {
@@ -1013,11 +1015,13 @@ namespace SystemBrightSpotBE.Controllers
                     Key = key,
                     InputStream = stream,
                     ContentType = "application/pdf",
+                    AutoCloseStream = false,
+                    UseChunkEncoding = false,
                     Headers =
                     {
                     ContentDisposition = $"attachment; filename*=UTF-8''{Uri.EscapeDataString(fileName)}"
                     }
-                });
+                }, cts.Token);
                 Console.WriteLine("Step 4");
 
                 // ===== Generate presigned URL =====
@@ -1037,6 +1041,22 @@ namespace SystemBrightSpotBE.Controllers
                 {
                     url = url
                 });
+            }
+            catch (OperationCanceledException ex)
+            {
+                Console.WriteLine("===== ERROR =====");
+                Console.WriteLine($"S3 upload timeout while creating skill sheet for user {id}: {ex}");
+                Console.WriteLine("=================");
+                _log.Error($"S3 upload timeout while creating skill sheet for user {id}: {ex}");
+                return JJsonResponse(StatusCodes.Status504GatewayTimeout, ErrorMessage: "Gateway Timeout");
+            }
+            catch (AmazonS3Exception ex)
+            {
+                Console.WriteLine("===== ERROR =====");
+                Console.WriteLine($"S3 upload failed while creating skill sheet for user {id}. ErrorCode={ex.ErrorCode}, StatusCode={ex.StatusCode}, RequestId={ex.RequestId}. {ex}");
+                Console.WriteLine("=================");
+                _log.Error($"S3 upload failed while creating skill sheet for user {id}. ErrorCode={ex.ErrorCode}, StatusCode={ex.StatusCode}, RequestId={ex.RequestId}. {ex}");
+                return JJsonResponse(StatusCodes.Status502BadGateway, ErrorMessage: "Bad Gateway");
             }
             catch (Exception ex)
             {
