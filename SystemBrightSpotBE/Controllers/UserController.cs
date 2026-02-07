@@ -1013,8 +1013,9 @@ namespace SystemBrightSpotBE.Controllers
                 {
                     BucketName = "jinzaicompass-pdf",
                     Key = key,
-                    InputStream = stream,
+                    //InputStream = stream,
                     ContentType = "application/pdf",
+                    ContentBody = "hello",
                     AutoCloseStream = false,
                     UseChunkEncoding = false,
                     Headers =
