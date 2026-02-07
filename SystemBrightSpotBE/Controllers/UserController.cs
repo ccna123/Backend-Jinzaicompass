@@ -991,13 +991,16 @@ namespace SystemBrightSpotBE.Controllers
 
             try
             {
+                Console.WriteLine("Step 1");
                 var data = await _userService.GetSkillSheetByTargetId(id);
                 // Set license
                 QuestPDF.Settings.License = LicenseType.Community;
                 // Generate PDF
+                Console.WriteLine("Step 2");
                 var document = new SkillSheetDoc(data);
                 var bytes = document.GeneratePdf();
 
+                Console.WriteLine("Step 3");
                 // ===== Upload to S3 =====
                 var fileName = $"{data.full_name}_スキルシート.pdf";
                 var key = $"app/pdf/{Guid.NewGuid()}_{fileName}";
@@ -1015,6 +1018,7 @@ namespace SystemBrightSpotBE.Controllers
                     ContentDisposition = $"attachment; filename*=UTF-8''{Uri.EscapeDataString(fileName)}"
                     }
                 });
+                Console.WriteLine("Step 4");
 
                 // ===== Generate presigned URL =====
                 var presignRequest = new GetPreSignedUrlRequest
@@ -1026,6 +1030,7 @@ namespace SystemBrightSpotBE.Controllers
                 };
 
                 var url = _s3.GetPreSignedURL(presignRequest);
+                Console.WriteLine("Step 5");
 
                 // ===== Return URL =====
                 return Ok(new
