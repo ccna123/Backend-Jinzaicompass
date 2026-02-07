@@ -41,6 +41,9 @@ namespace SystemBrightSpotBE.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("===== ERROR =====");
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine("=================");
                 _log.Error(ex.ToString());
                 return JJsonResponse(StatusCodes.Status500InternalServerError, ErrorMessage: ServerResource.InternalServerError);
             }
@@ -69,6 +72,9 @@ namespace SystemBrightSpotBE.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("===== ERROR =====");
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine("=================");
                 _log.Error(ex.ToString());
                 return JJsonResponse(StatusCodes.Status500InternalServerError, ErrorMessage: ServerResource.InternalServerError);
             }
@@ -103,6 +109,9 @@ namespace SystemBrightSpotBE.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("===== ERROR =====");
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine("=================");
                 _log.Error(ex.ToString());
                 return JJsonResponse(StatusCodes.Status500InternalServerError, ErrorMessage: ServerResource.InternalServerError);
             }
@@ -151,6 +160,9 @@ namespace SystemBrightSpotBE.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("===== ERROR =====");
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine("=================");
                 _log.Error(ex.ToString());
                 return JJsonResponse(StatusCodes.Status500InternalServerError, ErrorMessage: ServerResource.InternalServerError);
             }
@@ -185,6 +197,9 @@ namespace SystemBrightSpotBE.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("===== ERROR =====");
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine("=================");
                 _log.Error(ex.ToString());
                 return JJsonResponse(StatusCodes.Status500InternalServerError, ErrorMessage: ServerResource.InternalServerError);
             }
@@ -217,6 +232,9 @@ namespace SystemBrightSpotBE.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("===== ERROR =====");
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine("=================");
                 _log.Error(ex.ToString());
                 return JJsonResponse(
                     StatusCodes.Status500InternalServerError,
