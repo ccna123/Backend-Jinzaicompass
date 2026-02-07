@@ -22,7 +22,9 @@ namespace SystemBrightSpotBE.Services.S3Service
             
             _configuration = configuration;
 
-            _region = _configuration.GetSection("AWS:Region").Value ?? String.Empty;
+            _region = Environment.GetEnvironmentVariable("AWS_REGION")
+                ?? _configuration["AWS:Region"]
+                ?? "ap-northeast-1";
             _bucketName = _configuration.GetSection("AWS:BucketName").Value ?? String.Empty;
             _bucketNameforPDF = _configuration.GetSection("AWS:BucketNameforPDF").Value ?? String.Empty;
             // Get access key and secret key
