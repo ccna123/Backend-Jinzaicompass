@@ -1,24 +1,26 @@
 ﻿
+using Amazon.S3;
+using Amazon.S3.Model;
 using log4net;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using QuestPDF.Fluent;
+using QuestPDF.Infrastructure;
 using SystemBrightSpotBE.Attributes;
-using SystemBrightSpotBE.Services.UserService;
-using SystemBrightSpotBE.Services.PermissionService;
+using SystemBrightSpotBE.Dtos.Organization;
+using SystemBrightSpotBE.Dtos.User;
+using SystemBrightSpotBE.Dtos.UserManager;
+using SystemBrightSpotBE.Dtos.UserSkill;
+using SystemBrightSpotBE.Dtos.UserStatusHistory;
+using SystemBrightSpotBE.Enums;
+using SystemBrightSpotBE.PDFDocument;
+using SystemBrightSpotBE.Resources;
 using SystemBrightSpotBE.Services.CategoryService;
 using SystemBrightSpotBE.Services.CompanyService;
 using SystemBrightSpotBE.Services.OrganizationService;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Dtos.User;
-using SystemBrightSpotBE.Dtos.UserStatusHistory;
-using SystemBrightSpotBE.Dtos.UserSkill;
-using SystemBrightSpotBE.Dtos.UserManager;
-using SystemBrightSpotBE.PDFDocument;
-using QuestPDF.Fluent;
-using QuestPDF.Infrastructure;
-using SystemBrightSpotBE.Dtos.Organization;
+using SystemBrightSpotBE.Services.PermissionService;
+using SystemBrightSpotBE.Services.UserService;
 
 namespace SystemBrightSpotBE.Controllers
 {
@@ -33,13 +35,15 @@ namespace SystemBrightSpotBE.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ICompanyService _companyService;
         private readonly IOrganizationService _organizationService;
+        private readonly IAmazonS3 _s3;
 
         public UserController(
             IUserService userService,
             IPermissionService permissionService,
             ICategoryService categoryService,
             ICompanyService companyService,
-            IOrganizationService organizationService
+            IOrganizationService organizationService,
+            IAmazonS3 s3
         )
         {
             _log = LogManager.GetLogger(typeof(UserController));
@@ -48,6 +52,7 @@ namespace SystemBrightSpotBE.Controllers
             _categoryService = categoryService;
             _companyService = companyService;
             _organizationService = organizationService;
+            _s3 = s3;
         }
 
         [Authorize]
@@ -929,11 +934,41 @@ namespace SystemBrightSpotBE.Controllers
                 // Generate PDF
                 var document = new SkillSheetDoc(data);
                 var bytes = document.GeneratePdf();
-                return File(
-                    bytes,
-                    "application/pdf",
-                    $"{data.full_name}_スキルシート.pdf"
-                    );
+
+                // ===== Upload to S3 =====
+                var fileName = $"{data.full_name}_スキルシート.pdf";
+                var key = $"app/pdf/{Guid.NewGuid()}_{fileName}";
+
+                using var stream = new MemoryStream(bytes);
+
+                await _s3.PutObjectAsync(new PutObjectRequest
+                {
+                    BucketName = "jinzaicompass-pdf",
+                    Key = key,
+                    InputStream = stream,
+                    ContentType = "application/pdf",
+                    Headers =
+                    {
+                    ContentDisposition = $"attachment; filename*=UTF-8''{Uri.EscapeDataString(fileName)}"
+                    }
+                });
+
+                // ===== Generate presigned URL =====
+                var presignRequest = new GetPreSignedUrlRequest
+                {
+                    BucketName = "jinzaicompass-pdf",
+                    Key = key,
+                    Verb = HttpVerb.GET,
+                    Expires = DateTime.UtcNow.AddMinutes(10)
+                };
+
+                var url = _s3.GetPreSignedURL(presignRequest);
+
+                // ===== Return URL =====
+                return Ok(new
+                {
+                    url = url
+                });
             }
             catch (Exception ex)
             {
