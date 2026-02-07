@@ -1,6 +1,7 @@
 ﻿global using SystemBrightSpotBE.Base;
 global using SystemBrightSpotBE.Data;
 using Amazon.Lambda.AspNetCoreServer;
+using Amazon.S3;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -165,6 +166,7 @@ builder.Services.AddControllers().AddJsonOptions(opts =>
     opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddAWSService<IAmazonS3>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IExcelSeederService, ExcelSeederService>();
