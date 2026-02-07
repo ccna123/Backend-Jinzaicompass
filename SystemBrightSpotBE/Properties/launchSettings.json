@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SystemBrightSpotBE": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:62726;http://localhost:62727"
+    }
+  }
+}

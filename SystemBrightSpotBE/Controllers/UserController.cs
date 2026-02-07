@@ -929,21 +929,11 @@ namespace SystemBrightSpotBE.Controllers
                 // Generate PDF
                 var document = new SkillSheetDoc(data);
                 var bytes = document.GeneratePdf();
-                var base64 = Convert.ToBase64String(bytes);
-
-                return new JsonResult(new
-                {
-                    statusCode = 200,
-                    isBase64Encoded = true,
-                    headers = new Dictionary<string, string>
-        {
-            { "Content-Type", "application/pdf" },
-            { "Content-Disposition",
-              $"attachment; filename*=UTF-8''{Uri.EscapeDataString(data.full_name + "_スキルシート.pdf")}" }
-        },
-                    body = base64
-                });
-
+                return File(
+                    bytes,
+                    "application/pdf",
+                    $"{data.full_name}_スキルシート.pdf"
+                    );
             }
             catch (Exception ex)
             {
