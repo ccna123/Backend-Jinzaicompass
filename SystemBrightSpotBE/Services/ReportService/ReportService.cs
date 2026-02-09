@@ -641,7 +641,6 @@ namespace SystemBrightSpotBE.Services.ReportService
 
             // 2. Lấy dữ liệu report
             var reportDto = await FindById(reportId);
-            Console.WriteLine("reportDto: " + reportDto.ToString());
             if (reportDto == null)
             {
                 throw new Exception("Report không tồn tại");
@@ -672,6 +671,7 @@ namespace SystemBrightSpotBE.Services.ReportService
             };
 
             var messageJson = JsonSerializer.Serialize(message);
+            Console.WriteLine("messageJson: " + messageJson);
 
             // 5. Gửi message vào SQS
             await _sqsClient.SendMessageAsync(new SendMessageRequest
