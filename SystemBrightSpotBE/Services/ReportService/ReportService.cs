@@ -681,17 +681,18 @@ namespace SystemBrightSpotBE.Services.ReportService
             });
 
             // 6. Lưu trạng thái ban đầu vào DynamoDB
+            var item = new Dictionary<string, AttributeValue>
+        {
+            { "session_id", new AttributeValue { S = sessionId } },
+            { "status", new AttributeValue { S = "pending" } },
+            { "created_at", new AttributeValue { S = DateTime.UtcNow.ToString("o") } },
+            { "report_id", new AttributeValue { S = reportId.ToString() } }
+        };
+
             await _dynamoDbClient.PutItemAsync(new PutItemRequest
             {
                 TableName = _dynamoTableName,
-                Item = new Dictionary<string, AttributeValue>
-                {
-                    { "session_id", new AttributeValue { S = sessionId } },
-                    { "status", new AttributeValue { S = "pending" } },
-                    { "url", new AttributeValue { S = null } },
-                    { "created_at", new AttributeValue { S = DateTime.UtcNow.ToString("o") } },
-                    { "report_id", new AttributeValue { S = reportId.ToString() } } // optional
-                }
+                Item = item
             });
 
             _log.Info($"Request download report {reportId} - session {sessionId} đã gửi SQS và lưu DynamoDB");
