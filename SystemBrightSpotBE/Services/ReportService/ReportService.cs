@@ -641,15 +641,19 @@ namespace SystemBrightSpotBE.Services.ReportService
 
             // 2. Lấy dữ liệu report
             var reportDto = await FindById(reportId);
+            Console.WriteLine("reportDto: " + reportDto.ToString());
             if (reportDto == null)
             {
                 throw new Exception("Report không tồn tại");
             }
+            Console.WriteLine("reportDto: " + reportDto.ToString());
 
             // 3. Tạo session_id và report_id mới (cho worker xử lý)
             var sessionId = Guid.NewGuid().ToString("N"); // hoặc "session-" + Guid.NewGuid().ToString("N")
             var workerReportId = "report-" + DateTime.UtcNow.ToString("yyyyMMdd") + "-" + Guid.NewGuid().ToString("N").Substring(0, 6);
 
+            Console.WriteLine("sessionId: " + sessionId);
+            Console.WriteLine("workerReportId: " + workerReportId);
             // 4. Chuẩn bị message cho SQS
             var message = new
             {
