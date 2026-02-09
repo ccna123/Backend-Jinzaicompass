@@ -2,7 +2,6 @@
 global using SystemBrightSpotBE.Data;
 using Amazon.DynamoDBv2;
 using Amazon.Extensions.NETCore.Setup;
-using Amazon.Lambda.AspNetCoreServer;
 using Amazon.S3;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
@@ -174,7 +173,7 @@ builder.Services.AddControllers().AddJsonOptions(opts =>
 });
 builder.Services.AddDefaultAWSOptions(awsOptions);
 builder.Services.AddAWSService<IAmazonSQS>();
-builder.Services.AddAWSService<IAmazonDynamoDB>();
+builder.Services.AddAWSService<AmazonDynamoDBClient>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAWSService<IAmazonS3>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);

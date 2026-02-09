@@ -196,14 +196,14 @@ namespace SystemBrightSpotBE.Controllers
         public async Task<IActionResult> RequestPdfDownload(long id)
         {
             // 1. Kiểm tra report tồn tại và chưa bị xóa
-            var report = await _reportService.FindById(id);
-            if (report == null || report.deleted_at != null)
-                return NotFound();
+            //var report = await _reportService.FindById(id);
+            //if (report == null || report.deleted_at != null)
+            //    return NotFound();
 
             // 2. Kiểm tra quyền xem
-            bool hasPermissionView = await _reportService.HasPermisstionView(id);
-            if (!hasPermissionView)
-                return Forbid();
+            //bool hasPermissionView = await _reportService.HasPermisstionView(id);
+            //if (!hasPermissionView)
+            //    return Forbid();
 
             try
             {
@@ -218,6 +218,12 @@ namespace SystemBrightSpotBE.Controllers
                     sessionId,
                     message = "Yêu cầu tải PDF đã được gửi. Vui lòng chờ xử lý..."
                 });
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine("FormatException in RequestPdfDownload: " + ex.Message);
+                _log.Error("FormatException when processing reportId " + id, ex);
+                return StatusCode(500, "Lỗi định dạng dữ liệu (có thể do token hoặc ID không hợp lệ)");
             }
             catch (Exception ex)
             {

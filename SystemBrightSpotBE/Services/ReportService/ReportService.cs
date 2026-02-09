@@ -3,13 +3,8 @@ using Amazon.DynamoDBv2.Model;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using AutoMapper;
-using HtmlAgilityPack;
 using log4net;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Playwright;
-using QuestPDF.Fluent;
-using QuestPDF.Helpers;
-using QuestPDF.Infrastructure;
 using System.Text.Json;
 using SystemBrightSpotBE.Base.Pagination;
 using SystemBrightSpotBE.Dtos.Report;
@@ -41,9 +36,9 @@ namespace SystemBrightSpotBE.Services.ReportService
             IAuthService authService,
             IUserService userService,
             INotificationService notificationService,
-            IAmazonSQS sqsClient,              
-            IAmazonDynamoDB dynamoDbClient,    
-            IConfiguration configuration       
+            IAmazonSQS sqsClient,
+            IAmazonDynamoDB dynamoDbClient,
+            IConfiguration configuration
         )
         {
             _context = context;
@@ -51,7 +46,7 @@ namespace SystemBrightSpotBE.Services.ReportService
             _log = LogManager.GetLogger(typeof(ReportService));
             _authService = authService;
             _userService = userService;
-            
+
             _notificationService = notificationService;
             _sqsClient = sqsClient;
             _dynamoDbClient = dynamoDbClient;
@@ -74,20 +69,20 @@ namespace SystemBrightSpotBE.Services.ReportService
             var dataQuery = _context.reports
                 .Where(r => r.tenant_id == tenantId)
                 .Select(r => new
-                 {
-                     r.id,
-                     r.title,
-                     r.date,
-                     r.is_public,
-                     r.report_type_id,
-                     r.user_id,
-                     r.created_at,
-                     ReportType = r.ReportType,
-                     User = r.User,
-                     ReportDepartment = r.ReportDepartment,
-                     ReportDivision = r.ReportDivision,
-                     ReportGroup = r.ReportGroup,
-                     ReportUser = r.ReportUser
+                {
+                    r.id,
+                    r.title,
+                    r.date,
+                    r.is_public,
+                    r.report_type_id,
+                    r.user_id,
+                    r.created_at,
+                    ReportType = r.ReportType,
+                    User = r.User,
+                    ReportDepartment = r.ReportDepartment,
+                    ReportDivision = r.ReportDivision,
+                    ReportGroup = r.ReportGroup,
+                    ReportUser = r.ReportUser
                 })
                 .AsQueryable();
 
@@ -113,7 +108,8 @@ namespace SystemBrightSpotBE.Services.ReportService
             {
                 var userViewer = await _context.users.Where(u => u.id == request.viewer_id).FirstOrDefaultAsync();
 
-                if (userViewer == null) {
+                if (userViewer == null)
+                {
                     throw new Exception("User not found");
                 }
 
@@ -133,7 +129,7 @@ namespace SystemBrightSpotBE.Services.ReportService
                 {
                     case (long)RoleEnum.MEMBER:
                         dataQuery = dataQuery.Where(r =>
-                            paramUserIds.Contains(r.user_id) && 
+                            paramUserIds.Contains(r.user_id) &&
                             (
                                 r.is_public == true ||
                                 r.user_id == userId ||
@@ -165,7 +161,7 @@ namespace SystemBrightSpotBE.Services.ReportService
                         );
                         break;
                 }
-            } 
+            }
             else
             {
                 // Where by permission
@@ -524,7 +520,7 @@ namespace SystemBrightSpotBE.Services.ReportService
                     if (roleId == (long)RoleEnum.SYSTEM_ADMIN || report.is_public == true)
                     {
                         return true;
-                    } 
+                    }
                     else
                     {
                         if (managerUserIds.Contains(report.user_id))
@@ -552,7 +548,7 @@ namespace SystemBrightSpotBE.Services.ReportService
                             return true;
                         }
                     }
-                } 
+                }
                 else
                 {
                     if (userId == report.user_id)
