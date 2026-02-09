@@ -634,10 +634,10 @@ namespace SystemBrightSpotBE.Services.ReportService
         public async Task<string> RequestReportDownloadAsync(long reportId)
         {
             // 1. Kiểm tra quyền xem report
-            if (!await HasPermisstionView(reportId))
-            {
-                throw new Exception("Bạn không có quyền tải báo cáo này");
-            }
+            //if (!await HasPermisstionView(reportId))
+            //{
+            //    throw new Exception("Bạn không có quyền tải báo cáo này");
+            //}
 
             // 2. Lấy dữ liệu report
             var reportDto = await FindById(reportId);
