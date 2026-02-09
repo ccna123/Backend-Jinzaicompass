@@ -1,6 +1,4 @@
 using SystemBrightSpotBE.Dtos.Report;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 public class ReportDto
 {
     public long id { get; set; }
