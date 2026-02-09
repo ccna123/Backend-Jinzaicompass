@@ -173,7 +173,7 @@ builder.Services.AddControllers().AddJsonOptions(opts =>
 });
 builder.Services.AddDefaultAWSOptions(awsOptions);
 builder.Services.AddAWSService<IAmazonSQS>();
-builder.Services.AddAWSService<AmazonDynamoDBClient>();
+builder.Services.AddAWSService<IAmazonDynamoDB>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAWSService<IAmazonS3>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
