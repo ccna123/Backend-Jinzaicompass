@@ -1,8 +1,9 @@
 using SystemBrightSpotBE.Dtos.Report;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class ReportDto
 {
-    public long id {  get; set; }
+    public long id { get; set; }
     public string title { get; set; } = String.Empty;
     public string content { get; set; } = String.Empty;
     public DateOnly date { get; set; }
@@ -17,4 +18,9 @@ public class ReportDto
     public List<ReportDivisionDto> divisions { get; set; } = new List<ReportDivisionDto>();
     public List<ReportGroupDto> groups { get; set; } = new List<ReportGroupDto>();
     public List<ReportUserDto> users { get; set; } = new List<ReportUserDto>();
+
+    public override string ToString()
+    {
+        return $"ReportDto {{ Id={id}, Title={title}, Date={date}, Content={content}, ContentLength={(content?.Length ?? 0)}, IsPublic={is_public} }}";
+    }
 }

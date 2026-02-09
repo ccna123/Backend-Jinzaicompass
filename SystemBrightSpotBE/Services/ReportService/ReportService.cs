@@ -663,7 +663,7 @@ namespace SystemBrightSpotBE.Services.ReportService
                 is_public = reportDto.is_public,
                 report_type_name = reportDto.report_type_name,
                 user_fullname = reportDto.user_fullname,
-                date = reportDto.date.ToString("yyyy-MM-ddTHH:mm:ss"),
+                date = reportDto.date.ToString("yyyy-MM-dd"),
                 departments = reportDto.departments,
                 divisions = reportDto.divisions,
                 groups = reportDto.groups,
