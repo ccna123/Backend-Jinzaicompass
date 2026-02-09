@@ -1,5 +1,4 @@
 using Amazon.S3;
-using Amazon.S3.Model;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -193,7 +192,6 @@ namespace SystemBrightSpotBE.Controllers
             }
         }
 
-        [Authorize]
         [HttpGet("{id}/pdf")]
         public async Task<IActionResult> RequestPdfDownload(long id)
         {
@@ -233,7 +231,6 @@ namespace SystemBrightSpotBE.Controllers
             }
         }
 
-        [Authorize]
         [HttpGet("report-status/{sessionId}")]
         public async Task<IActionResult> GetReportStatus(string sessionId)
         {
