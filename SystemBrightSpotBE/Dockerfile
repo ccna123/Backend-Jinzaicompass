@@ -46,34 +46,6 @@ RUN dotnet publish "SystemBrightSpotBE.csproj" -c Release -o /app/publish
 FROM public.ecr.aws/lambda/dotnet:8
 WORKDIR /var/task
 
-# Cài đặt các thư viện cần thiết để chạy Chrome (headless)
-RUN dnf install -y \
-    atk \
-    cups-libs \
-    gtk3 \
-    libXcomposite \
-    libXcursor \
-    libXdamage \
-    libXext \
-    libXi \
-    libXrandr \
-    libXScrnSaver \
-    libXtst \
-    pango \
-    at-spi2-atk \
-    libdrm \
-    libgbm \
-    libxshmfence \
-    alsa-lib \
-    nss \
-    mesa-libgbm \
-    google-noto-sans-cjk-fonts \
-    google-noto-emoji-fonts \
-    ipa-gothic-fonts \
-    ipa-mincho-fonts \
-    fontconfig \
-    && dnf clean all
-
 # # Copy code đã build vào image
 COPY --from=build /app/publish .
 
