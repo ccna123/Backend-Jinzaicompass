@@ -7,13 +7,21 @@ phases:
       - ECR_SERVER=$(echo $ECR_REPOSITORY_URI | cut -d/ -f1)
       - echo $ECR_SERVER
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_SERVER
-      - IMAGE_TAG="v$CODEBUILD_BUILD_NUMBER"
+
+      # Lấy commit id (7 ký tự đầu)
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - echo Commit hash is $COMMIT_HASH
+
+      - IMAGE_TAG=$COMMIT_HASH
+      - echo Image tag is $IMAGE_TAG
+
   build:
     commands:
       - echo Building the Docker image...
       - cd SystemBrightSpotBE
       - docker build -t $ECR_REPOSITORY_URI:$IMAGE_TAG .
       - docker tag $ECR_REPOSITORY_URI:$IMAGE_TAG $ECR_REPOSITORY_URI:latest
+
   post_build:
     commands:
       - echo Pushing the Docker images...
@@ -21,15 +29,24 @@ phases:
       - docker push $ECR_REPOSITORY_URI:latest
 
       - echo Updating Lambda code...
-      - aws lambda update-function-code --function-name $LAMBDA_NAME --image-uri $ECR_REPOSITORY_URI:$IMAGE_TAG
+      - aws lambda update-function-code \
+        --function-name $LAMBDA_NAME \
+        --image-uri $ECR_REPOSITORY_URI:$IMAGE_TAG
 
-      # ĐỢI cho đến khi Lambda cập nhật xong hoàn toàn (Xịn hơn sleep nhiều)
+      # ĐỢI Lambda update xong hẳn
       - echo "Waiting for function update to complete..."
       - aws lambda wait function-updated --function-name $LAMBDA_NAME
 
       - echo Publishing new version...
-      - NEW_VERSION=$(aws lambda publish-version --function-name $LAMBDA_NAME --query 'Version' --output text)
+      - NEW_VERSION=$(aws lambda publish-version \
+        --function-name $LAMBDA_NAME \
+        --query 'Version' \
+        --output text)
+
       - echo "New Version is $NEW_VERSION"
 
       - echo Updating Alias LIVE to point to version $NEW_VERSION...
-      - aws lambda update-alias --function-name $LAMBDA_NAME --name LIVE --function-version $NEW_VERSION
+      - aws lambda update-alias \
+        --function-name $LAMBDA_NAME \
+        --name LIVE \
+        --function-version $NEW_VERSION
