@@ -29,24 +29,16 @@ phases:
       - docker push $ECR_REPOSITORY_URI:latest
 
       - echo Updating Lambda code...
-      - aws lambda update-function-code \
-        --function-name $LAMBDA_NAME \
-        --image-uri $ECR_REPOSITORY_URI:$IMAGE_TAG
+      - aws lambda update-function-code --function-name $LAMBDA_NAME --image-uri $ECR_REPOSITORY_URI:$IMAGE_TAG
 
       # ĐỢI Lambda update xong hẳn
       - echo "Waiting for function update to complete..."
       - aws lambda wait function-updated --function-name $LAMBDA_NAME
 
       - echo Publishing new version...
-      - NEW_VERSION=$(aws lambda publish-version \
-        --function-name $LAMBDA_NAME \
-        --query 'Version' \
-        --output text)
+      - NEW_VERSION=$(aws lambda publish-version --function-name $LAMBDA_NAME --query 'Version' --output text)
 
       - echo "New Version is $NEW_VERSION"
 
       - echo Updating Alias LIVE to point to version $NEW_VERSION...
-      - aws lambda update-alias \
-        --function-name $LAMBDA_NAME \
-        --name LIVE \
-        --function-version $NEW_VERSION
+      - aws lambda update-alias --function-name $LAMBDA_NAME --name LIVE --function-version $NEW_VERSION
