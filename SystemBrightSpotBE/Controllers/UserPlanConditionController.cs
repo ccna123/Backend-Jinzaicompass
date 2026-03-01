@@ -1,11 +1,3 @@
-using log4net;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SystemBrightSpotBE.Dtos.Plan.UserPlan;
-using SystemBrightSpotBE.Dtos.Plan.UserPlanCondition;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Services.UserPlanConditionService;
-
 namespace SystemBrightSpotBE.Controllers
 {
     [Route("api/user-plan-condition")]
@@ -14,7 +6,7 @@ namespace SystemBrightSpotBE.Controllers
     {
         private readonly ILog _log;
         private readonly IUserPlanConditionService _userPlanConditionService;
-        
+
         public UserPlanConditionController(
             IUserPlanConditionService userPlanConditionService
         )

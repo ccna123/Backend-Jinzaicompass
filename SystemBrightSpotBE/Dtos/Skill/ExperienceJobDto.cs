@@ -1,6 +1,4 @@
-﻿using SystemBrightSpotBE.Enums;
-
-namespace SystemBrightSpotBE.Dtos.Skill
+﻿namespace SystemBrightSpotBE.Dtos.Skill
 {
     public class ExperienceJobDto : SkillDto
     {

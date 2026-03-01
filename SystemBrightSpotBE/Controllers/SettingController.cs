@@ -1,11 +1,3 @@
-using log4net;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SystemBrightSpotBE.Attributes;
-using SystemBrightSpotBE.Dtos.Setting;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Services.SettingService;
-
 namespace SystemBrightSpotBE.Controllers
 {
     [Route("api/[controller]")]
@@ -14,7 +6,7 @@ namespace SystemBrightSpotBE.Controllers
     {
         private readonly ILog _log;
         private readonly ISettingService _settingService;
-        
+
         public SettingController(
             ISettingService settingService
         )

@@ -1,16 +1,3 @@
-using log4net;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SystemBrightSpotBE.Attributes;
-using SystemBrightSpotBE.Dtos.Plan;
-using SystemBrightSpotBE.Dtos.Plan.LogActivity;
-using SystemBrightSpotBE.Dtos.Plan.UserPlan;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Services.AuthService;
-using SystemBrightSpotBE.Services.PlanService;
-using SystemBrightSpotBE.Services.UserService;
-
 namespace SystemBrightSpotBE.Controllers
 {
     [Route("api/[controller]")]
@@ -21,7 +8,7 @@ namespace SystemBrightSpotBE.Controllers
         private readonly IPlanService _planService;
         private readonly IUserService _userService;
         private readonly IAuthService _authService;
-        
+
         public PlanController(
             IPlanService planService,
             IUserService userService,
@@ -167,10 +154,10 @@ namespace SystemBrightSpotBE.Controllers
             if (plan is null || plan.deleted_at != null)
             {
                 return JJsonResponse(StatusCodes.Status404NotFound, Message: ApiResource.PlanNotFound);
-            } 
+            }
             else
             {
-                if (plan.status != (int) PlanStatusEnum.NO_START)
+                if (plan.status != (int)PlanStatusEnum.NO_START)
                 {
                     return JJsonResponse(StatusCodes.Status403Forbidden, ErrorMessage: ServerResource.Forbidden);
                 }
@@ -240,7 +227,7 @@ namespace SystemBrightSpotBE.Controllers
             if (plan is null || plan.deleted_at != null)
             {
                 return JJsonResponse(StatusCodes.Status404NotFound, Message: ApiResource.PlanNotFound);
-            } 
+            }
             else
             {
                 if (plan.status == (long)PlanStatusEnum.COMPLETED)
@@ -310,7 +297,8 @@ namespace SystemBrightSpotBE.Controllers
             if (userPlan is null)
             {
                 return JJsonResponse(StatusCodes.Status404NotFound, Message: ApiResource.UserPlanNotFound);
-            } else
+            }
+            else
             {
                 var hasPermission = await _planService.HasPermissionDeleteAllocation(id, userId);
                 if (!hasPermission)

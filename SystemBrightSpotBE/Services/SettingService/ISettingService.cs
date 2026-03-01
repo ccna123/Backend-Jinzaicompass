@@ -1,6 +1,4 @@
-﻿using SystemBrightSpotBE.Dtos.Setting;
-
-namespace SystemBrightSpotBE.Services.SettingService
+﻿namespace SystemBrightSpotBE.Services.SettingService
 {
     public interface ISettingService
     {

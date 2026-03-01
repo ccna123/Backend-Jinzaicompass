@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Net;
+﻿using System.Net;
 
 namespace SystemBrightSpotBE.Base
 {

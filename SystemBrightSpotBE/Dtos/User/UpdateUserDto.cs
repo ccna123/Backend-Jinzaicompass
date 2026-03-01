@@ -1,7 +1,4 @@
-using SystemBrightSpotBE.Dtos.UserStatusHistory;
 using System.ComponentModel.DataAnnotations;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SystemBrightSpotBE.Dtos.User
@@ -9,7 +6,7 @@ namespace SystemBrightSpotBE.Dtos.User
     public class UpdateUserDto
     {
         [AllowedContentTypeAttribute(new[] { "image/jpeg", "image/png", "image/svg+xml" })]
-        public IFormFile? avatar { get; set; } 
+        public IFormFile? avatar { get; set; }
         [Required(ErrorMessageResourceType = typeof(UserResource), ErrorMessageResourceName = "FirstNameRequired")]
         [MaxLength(64, ErrorMessageResourceType = typeof(UserResource), ErrorMessageResourceName = "FirstNameMaxLength")]
         [RegularExpression(

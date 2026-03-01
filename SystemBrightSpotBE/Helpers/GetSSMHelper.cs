@@ -1,5 +1,3 @@
-using Amazon.SimpleSystemsManagement;
-using Amazon.SimpleSystemsManagement.Model;
 namespace SystemBrightSpotBE.Helpers
 {
     public class GetSSMHelper

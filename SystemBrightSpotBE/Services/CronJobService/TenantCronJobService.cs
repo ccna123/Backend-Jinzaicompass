@@ -1,13 +1,4 @@
-﻿using Amazon;
-using Amazon.Runtime;
-using Amazon.SQS;
-using Amazon.SQS.Model;
-using Microsoft.AspNet.Identity;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Models;
-using SystemBrightSpotBE.Services.AuthService;
+﻿using System.Text.Json;
 
 namespace SystemBrightSpotBE.Services.CronJobService
 {
@@ -47,8 +38,8 @@ namespace SystemBrightSpotBE.Services.CronJobService
                     {
                         t.status = (long)TenantStatusEnum.EXPIRED;
                         continue;
-                    } 
-                    
+                    }
+
                     if (t.status == (long)TenantStatusEnum.SCHEDULED && t.start_date <= currDay)
                     {
                         Console.WriteLine("Send mail & change status tenant");

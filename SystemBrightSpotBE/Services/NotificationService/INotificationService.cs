@@ -1,6 +1,4 @@
-﻿using SystemBrightSpotBE.Dtos.Notification;
-
-namespace SystemBrightSpotBE.Services.NotificationService
+﻿namespace SystemBrightSpotBE.Services.NotificationService
 {
     public interface INotificationService
     {

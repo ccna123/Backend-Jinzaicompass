@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SystemBrightSpotBE.Resources;
 
 namespace SystemBrightSpotBE.Dtos.Tenant
 {
@@ -21,7 +20,7 @@ namespace SystemBrightSpotBE.Dtos.Tenant
         [Required(ErrorMessageResourceType = typeof(TenantResource), ErrorMessageResourceName = "LastNameRequired")]
         [MaxLength(64, ErrorMessageResourceType = typeof(TenantResource), ErrorMessageResourceName = "LastNameMaxLength")]
         public string last_name { get; set; } = String.Empty;
-        
+
         [Required(ErrorMessageResourceType = typeof(TenantResource), ErrorMessageResourceName = "PhoneRequired")]
         [MaxLength(16, ErrorMessageResourceType = typeof(TenantResource), ErrorMessageResourceName = "PhoneMaxLength")]
         [RegularExpression(@"^[0-9\- ]+$", ErrorMessageResourceType = typeof(TenantResource), ErrorMessageResourceName = "PhoneRegx")]

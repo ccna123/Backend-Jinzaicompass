@@ -1,11 +1,3 @@
-using log4net;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SystemBrightSpotBE.Attributes;
-using SystemBrightSpotBE.Dtos.Tenant;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Services.TenantService;
-
 namespace SystemBrightSpotBE.Controllers
 {
     [Route("api/[controller]")]

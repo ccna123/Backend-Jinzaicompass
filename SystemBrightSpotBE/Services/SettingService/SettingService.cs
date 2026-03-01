@@ -1,12 +1,4 @@
-﻿using AutoMapper;
-using log4net;
-using Microsoft.EntityFrameworkCore;
-using SystemBrightSpotBE.Dtos.Setting;
-using SystemBrightSpotBE.Models;
-using SystemBrightSpotBE.Services.AuthService;
-using SystemBrightSpotBE.Services.S3Service;
-
-namespace SystemBrightSpotBE.Services.SettingService
+﻿namespace SystemBrightSpotBE.Services.SettingService
 {
     public class SettingService : ISettingService
     {
@@ -64,7 +56,7 @@ namespace SystemBrightSpotBE.Services.SettingService
                     {
                         setting.file_url_thumb = resultUploadThumb.ToString();
                     }
-                } 
+                }
                 else
                 {
                     if (removeFile)
@@ -80,7 +72,7 @@ namespace SystemBrightSpotBE.Services.SettingService
                 }
                 setting.user_id = userId;
                 setting.updated_at = DateTime.Now;
-            } 
+            }
             else
             {
                 // Create setting

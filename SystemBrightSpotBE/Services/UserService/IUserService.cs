@@ -1,12 +1,3 @@
-using SystemBrightSpotBE.Base.Pagination;
-using SystemBrightSpotBE.Dtos.User;
-using SystemBrightSpotBE.Dtos.UserCertification;
-using SystemBrightSpotBE.Dtos.UserCompanyAward;
-using SystemBrightSpotBE.Dtos.UserManager;
-using SystemBrightSpotBE.Dtos.UserProject;
-using SystemBrightSpotBE.Dtos.UserSkill;
-using SystemBrightSpotBE.Enums;
-
 namespace SystemBrightSpotBE.Services.UserService
 {
     public interface IUserService

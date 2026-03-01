@@ -1,15 +1,6 @@
-﻿using Amazon;
-using Amazon.Runtime;
-using Amazon.SQS;
-using Amazon.SQS.Model;
-using Microsoft.AspNet.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text.Json;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Models;
 
 namespace SystemBrightSpotBE.Services.AuthService
 {
@@ -23,7 +14,8 @@ namespace SystemBrightSpotBE.Services.AuthService
             DataContext context,
             IConfiguration configuration,
             IHttpContextAccessor httpContextAccessor
-        ) {
+        )
+        {
             _context = context;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
@@ -95,7 +87,7 @@ namespace SystemBrightSpotBE.Services.AuthService
                 {
                     // Check status tenant & role
                     if (account.role_id != (long)RoleEnum.SUPPER_ADMIN)
-                    { 
+                    {
                         if (account.Tenant == null || account.Tenant.status != (long)TenantStatusEnum.ACTIVED)
                         {
                             return false;

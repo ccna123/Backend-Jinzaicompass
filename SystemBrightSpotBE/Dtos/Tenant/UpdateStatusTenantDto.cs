@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SystemBrightSpotBE.Enums;
 
 namespace SystemBrightSpotBE.Dtos.Tenant
 {

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SystemBrightSpotBE.Dtos.Organization
+﻿namespace SystemBrightSpotBE.Dtos.Organization
 {
     public class DepartmentParamDto
     {

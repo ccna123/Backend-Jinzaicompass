@@ -1,14 +1,4 @@
-﻿using log4net;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SystemBrightSpotBE.Attributes;
-using SystemBrightSpotBE.Dtos.Company;
-using SystemBrightSpotBE.Dtos.MonitoringSystem;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Services.AuthService;
-using SystemBrightSpotBE.Services.MonitoringSystemService;
-
-namespace SystemBrightSpotBE.Controllers
+﻿namespace SystemBrightSpotBE.Controllers
 {
     [Route("api/monitoring-system")]
     [ApiController]
@@ -22,7 +12,8 @@ namespace SystemBrightSpotBE.Controllers
             DataContext context,
             IAuthService authService,
             IMonitoringSystemService monitoringSystemService
-        ) {
+        )
+        {
             _log = LogManager.GetLogger(typeof(MonitoringSystemController));
             _context = context;
             _authService = authService;

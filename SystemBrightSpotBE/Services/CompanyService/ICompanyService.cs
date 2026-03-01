@@ -1,7 +1,4 @@
-﻿using SystemBrightSpotBE.Base.Pagination;
-using SystemBrightSpotBE.Dtos.Company;
-
-namespace SystemBrightSpotBE.Services.CompanyService
+﻿namespace SystemBrightSpotBE.Services.CompanyService
 {
     public interface ICompanyService
     {

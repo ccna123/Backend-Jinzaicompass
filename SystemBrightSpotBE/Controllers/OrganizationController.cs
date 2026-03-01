@@ -1,12 +1,3 @@
-using log4net;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SystemBrightSpotBE.Attributes;
-using SystemBrightSpotBE.Dtos.Organization;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Services.OrganizationService;
-
 namespace SystemBrightSpotBE.Controllers
 {
     [Route("api/[controller]")]
@@ -15,7 +6,7 @@ namespace SystemBrightSpotBE.Controllers
     {
         private readonly ILog _log;
         private readonly IOrganizationService _organizationService;
-        
+
         public OrganizationController(
             IOrganizationService organizationService
         )

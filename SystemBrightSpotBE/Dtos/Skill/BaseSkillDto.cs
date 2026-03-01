@@ -1,7 +1,4 @@
-﻿using Swashbuckle.AspNetCore.Annotations;
-using System.ComponentModel.DataAnnotations;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Resources;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SystemBrightSpotBE.Dtos.Skill
 {

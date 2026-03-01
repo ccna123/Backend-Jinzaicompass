@@ -1,12 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using SystemBrightSpotBE.Dtos.Dashboard;
-using SystemBrightSpotBE.Dtos.Report;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Services.AuthService;
-using SystemBrightSpotBE.Services.UserService;
-
-namespace SystemBrightSpotBE.Services.DashboardService
+﻿namespace SystemBrightSpotBE.Services.DashboardService
 {
     public class DashboardService : IDashboardService
     {
@@ -144,21 +136,21 @@ namespace SystemBrightSpotBE.Services.DashboardService
             List<long> managerUserIds = await _userService.GetManagedUsersId();
             // Where by permission
             var dataQuery = _context.reports.Where(r => r.tenant_id == tenantId).Select(r => new
-                {
-                    r.id,
-                    r.title,
-                    r.date,
-                    r.is_public,
-                    r.report_type_id,
-                    r.user_id,
-                    r.created_at,
-                    ReportType = r.ReportType,
-                    User = r.User,
-                    ReportDepartment = r.ReportDepartment,
-                    ReportDivision = r.ReportDivision,
-                    ReportGroup = r.ReportGroup,
-                    ReportUser = r.ReportUser
-                }).AsQueryable();
+            {
+                r.id,
+                r.title,
+                r.date,
+                r.is_public,
+                r.report_type_id,
+                r.user_id,
+                r.created_at,
+                ReportType = r.ReportType,
+                User = r.User,
+                ReportDepartment = r.ReportDepartment,
+                ReportDivision = r.ReportDivision,
+                ReportGroup = r.ReportGroup,
+                ReportUser = r.ReportUser
+            }).AsQueryable();
 
             switch (roleId)
             {
@@ -233,9 +225,9 @@ namespace SystemBrightSpotBE.Services.DashboardService
                 .Select(pos => new RatioDto
                 {
                     name = pos.name,
-                    count = _context.project_participation_position.Count(ppp => 
-                        ppp.participation_position_id == pos.id && 
-                        ppp.Project != null && 
+                    count = _context.project_participation_position.Count(ppp =>
+                        ppp.participation_position_id == pos.id &&
+                        ppp.Project != null &&
                         ppp.Project.start_date < today &&
                         managerUserIds.Contains(ppp.Project!.user_id!.Value)
                     )
@@ -319,10 +311,10 @@ namespace SystemBrightSpotBE.Services.DashboardService
                 })
                 .ToDictionary(x => x.range, x => x.count);
 
-            var ranges = new[] { 
+            var ranges = new[] {
                 "0～1年", "2～3年", "4～5年", "6～7年",
                 "8～9年", "10～11年", "12～15年",
-                "16～20年", "21～年" 
+                "16～20年", "21～年"
             };
 
             var finalResult = ranges
@@ -347,9 +339,9 @@ namespace SystemBrightSpotBE.Services.DashboardService
                 .Select(job => new RatioDto
                 {
                     name = job.name,
-                    count = _context.project_experience_job.Count(pej => 
-                        pej.experience_job_id == job.id && 
-                        pej.Project != null && 
+                    count = _context.project_experience_job.Count(pej =>
+                        pej.experience_job_id == job.id &&
+                        pej.Project != null &&
                         pej.Project.start_date < today &&
                         managerUserIds.Contains(pej.Project!.user_id!.Value)
                     )
@@ -370,9 +362,9 @@ namespace SystemBrightSpotBE.Services.DashboardService
                 .Select(field => new RatioDto
                 {
                     name = field.name,
-                    count = _context.project_experience_field.Count(pef => 
-                        pef.experience_field_id == field.id && 
-                        pef.Project != null && 
+                    count = _context.project_experience_field.Count(pef =>
+                        pef.experience_field_id == field.id &&
+                        pef.Project != null &&
                         pef.Project.start_date < today &&
                         managerUserIds.Contains(pef.Project!.user_id!.Value)
                     )
@@ -393,9 +385,9 @@ namespace SystemBrightSpotBE.Services.DashboardService
                 .Select(area => new RatioDto
                 {
                     name = area.name,
-                    count = _context.project_experience_area.Count(pea => 
-                        pea.experience_area_id == area.id && 
-                        pea.Project != null && 
+                    count = _context.project_experience_area.Count(pea =>
+                        pea.experience_area_id == area.id &&
+                        pea.Project != null &&
                         pea.Project.start_date < today &&
                         managerUserIds.Contains(pea.Project!.user_id!.Value)
                     )
@@ -416,9 +408,9 @@ namespace SystemBrightSpotBE.Services.DashboardService
                 .Select(skill => new RatioDto
                 {
                     name = skill.name,
-                    count = _context.project_specific_skill.Count(pss => 
-                        pss.specific_skill_id == skill.id && 
-                        pss.Project != null && 
+                    count = _context.project_specific_skill.Count(pss =>
+                        pss.specific_skill_id == skill.id &&
+                        pss.Project != null &&
                         pss.Project.start_date < today &&
                         managerUserIds.Contains(pss.Project!.user_id!.Value)
                     )

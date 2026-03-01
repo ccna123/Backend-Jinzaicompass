@@ -1,10 +1,4 @@
-﻿using Amazon.S3;
-using Amazon.S3.Model;
-using Amazon.S3.Transfer;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Advanced;
-using SixLabors.ImageSharp.Processing;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 namespace SystemBrightSpotBE.Services.S3Service
 {
@@ -18,8 +12,9 @@ namespace SystemBrightSpotBE.Services.S3Service
 
         public S3Service(
             IConfiguration configuration
-        ) {
-            
+        )
+        {
+
             _configuration = configuration;
 
             _region = Environment.GetEnvironmentVariable("AWS_REGION")
@@ -34,7 +29,7 @@ namespace SystemBrightSpotBE.Services.S3Service
             if (!String.IsNullOrEmpty(accessKey) && !String.IsNullOrEmpty(secretKey))
             {
                 // use credentials
-               _s3Client = new AmazonS3Client(accessKey, secretKey, Amazon.RegionEndpoint.GetBySystemName(_region));
+                _s3Client = new AmazonS3Client(accessKey, secretKey, Amazon.RegionEndpoint.GetBySystemName(_region));
             }
             else
             {

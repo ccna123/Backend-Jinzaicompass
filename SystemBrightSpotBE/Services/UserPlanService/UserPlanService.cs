@@ -1,12 +1,4 @@
-﻿using AutoMapper;
-using log4net;
-using Microsoft.EntityFrameworkCore;
-using SystemBrightSpotBE.Dtos.Plan.UserPlan;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Models;
-using SystemBrightSpotBE.Services.AuthService;
-
-namespace SystemBrightSpotBE.Services.UserPlanService
+﻿namespace SystemBrightSpotBE.Services.UserPlanService
 {
     public class UserPlanService : IUserPlanService
     {
@@ -84,13 +76,13 @@ namespace SystemBrightSpotBE.Services.UserPlanService
                         {
                             userPlan.status = (long)UserPlanStatusEnum.PENDING_APPROVAL;
                         }
-                    } 
+                    }
                     else
                     {
                         if (request.type == ActivityStatusEnum.ACCEPTED || request.type == ActivityStatusEnum.SUBMITTED)
                         {
                             userPlan.status = (long)UserPlanStatusEnum.COMPLETED;
-                        } 
+                        }
                         else if (request.type == ActivityStatusEnum.REJECTED)
                         {
                             userPlan.status = (long)UserPlanStatusEnum.IN_PROGRESS;
@@ -122,7 +114,7 @@ namespace SystemBrightSpotBE.Services.UserPlanService
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-                   
+
                     throw new Exception("Create user plan activity error: " + ex.Message, ex);
                 }
             }
@@ -200,7 +192,7 @@ namespace SystemBrightSpotBE.Services.UserPlanService
                         // Update status plan
                         await _context.SaveChangesAsync();
                     }
-                   
+
                     // Commit transaction
                     await transaction.CommitAsync();
                 }
@@ -242,7 +234,8 @@ namespace SystemBrightSpotBE.Services.UserPlanService
             long roleId = (long)_authService.GetAccountId("Role");
 
             var userPlan = await FindById(id);
-            if (userPlan != null) {
+            if (userPlan != null)
+            {
                 // Check all user plan condition statuses have been approved or not
                 var allCompleteCondition = await _context.user_plan_condition
                     .Where(upc => upc.user_plan_id == id)

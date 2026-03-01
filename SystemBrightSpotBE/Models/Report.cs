@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,8 +24,8 @@ namespace SystemBrightSpotBE.Models
         public ReportType? ReportType { get; set; }
 
         [Comment(@"
-            1FŒöŠJ
-            0F”ñŒöŠJ")]
+            1ï¿½Fï¿½ï¿½ï¿½J
+            0ï¿½Fï¿½ï¿½ï¿½ï¿½J")]
         public bool? is_public { get; set; } = true;
 
         [Required]

@@ -1,28 +1,4 @@
-﻿
-using Amazon.S3;
-using Amazon.S3.Model;
-using log4net;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using QuestPDF.Fluent;
-using QuestPDF.Infrastructure;
-using SystemBrightSpotBE.Attributes;
-using SystemBrightSpotBE.Dtos.Organization;
-using SystemBrightSpotBE.Dtos.User;
-using SystemBrightSpotBE.Dtos.UserManager;
-using SystemBrightSpotBE.Dtos.UserSkill;
-using SystemBrightSpotBE.Dtos.UserStatusHistory;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.PDFDocument;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Services.CategoryService;
-using SystemBrightSpotBE.Services.CompanyService;
-using SystemBrightSpotBE.Services.OrganizationService;
-using SystemBrightSpotBE.Services.PermissionService;
-using SystemBrightSpotBE.Services.UserService;
-
-namespace SystemBrightSpotBE.Controllers
+﻿namespace SystemBrightSpotBE.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]

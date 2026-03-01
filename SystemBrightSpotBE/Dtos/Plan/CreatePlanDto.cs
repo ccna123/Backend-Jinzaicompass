@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SystemBrightSpotBE.Dtos.Plan.PlanCondition;
-using SystemBrightSpotBE.Resources;
 
 namespace SystemBrightSpotBE.Dtos.Plan
 {

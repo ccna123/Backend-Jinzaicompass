@@ -1,11 +1,4 @@
-﻿using AutoMapper;
-using log4net;
-using Microsoft.EntityFrameworkCore;
-using SystemBrightSpotBE.Dtos.Notification;
-using SystemBrightSpotBE.Models;
-using SystemBrightSpotBE.Services.AuthService;
-
-namespace SystemBrightSpotBE.Services.NotificationService
+﻿namespace SystemBrightSpotBE.Services.NotificationService
 {
     public class NotificationService : INotificationService
     {
@@ -48,12 +41,12 @@ namespace SystemBrightSpotBE.Services.NotificationService
                 {
                     allGroupIds.AddRange(groupIds);
                 }
-                   
+
                 if (groupIdsInDivisions.Any())
                 {
                     allGroupIds.AddRange(groupIdsInDivisions);
                 }
-                
+
 
                 dataQuery = dataQuery.Where(u =>
                     (departmentIds.Any() && u.department_id.HasValue && departmentIds.Contains(u.department_id.Value)) ||
@@ -114,7 +107,8 @@ namespace SystemBrightSpotBE.Services.NotificationService
             var notifications = await _context.notifications
                 .Where(n => n.user_id == userId && n.created_at >= monthAgo)
                 .OrderByDescending(n => n.created_at)
-                .Select(n => new NotificationDto {
+                .Select(n => new NotificationDto
+                {
                     title = n.Report!.title,
                     content = n.content,
                     is_read = n.is_read,

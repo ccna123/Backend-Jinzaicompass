@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace SystemBrightSpotBE.Dtos.Report
 {
     public class ListReportParamDto

@@ -1,6 +1,4 @@
-﻿using SystemBrightSpotBE.Enums;
-
-namespace SystemBrightSpotBE.Dtos.Organization
+﻿namespace SystemBrightSpotBE.Dtos.Organization
 {
     public class GroupDto : OrganizationDto
     {

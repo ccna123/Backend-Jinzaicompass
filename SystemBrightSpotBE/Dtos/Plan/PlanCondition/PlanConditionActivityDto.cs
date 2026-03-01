@@ -1,7 +1,4 @@
-﻿using SystemBrightSpotBE.Dtos.Plan.UserPlan;
-using SystemBrightSpotBE.Dtos.Plan.UserPlanCondition;
-
-namespace SystemBrightSpotBE.Dtos.Plan.PlanCondition
+﻿namespace SystemBrightSpotBE.Dtos.Plan.PlanCondition
 {
     public class PlanConditionActivityDto
     {

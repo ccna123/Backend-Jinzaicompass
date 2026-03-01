@@ -1,8 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using SystemBrightSpotBE.Attributes;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Resources;
 
 namespace SystemBrightSpotBE.Dtos.Plan.UserPlan
 {

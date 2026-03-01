@@ -1,12 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using SystemBrightSpotBE.Dtos.Category;
-using SystemBrightSpotBE.Dtos.Skill;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Models;
-using SystemBrightSpotBE.Services.AuthService;
-
-namespace SystemBrightSpotBE.Services.SkillService
+﻿namespace SystemBrightSpotBE.Services.SkillService
 {
     public class SkillService : ISkillService
     {

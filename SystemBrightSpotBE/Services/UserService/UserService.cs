@@ -1,31 +1,6 @@
-
-using Amazon;
-using Amazon.Runtime;
-using Amazon.SQS;
-using Amazon.SQS.Model;
-using AutoMapper;
-using log4net;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Text.Json;
-using SystemBrightSpotBE.Base.Pagination;
-using SystemBrightSpotBE.Dtos.User;
-using SystemBrightSpotBE.Dtos.UserCertification;
-using SystemBrightSpotBE.Dtos.UserCompanyAward;
-using SystemBrightSpotBE.Dtos.UserManager;
-using SystemBrightSpotBE.Dtos.UserProject;
-using SystemBrightSpotBE.Dtos.UserSkill;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Filters;
-using SystemBrightSpotBE.Helpers;
-using SystemBrightSpotBE.Models;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Services.AuthService;
-using SystemBrightSpotBE.Services.S3Service;
 
 namespace SystemBrightSpotBE.Services.UserService
 {
@@ -131,7 +106,7 @@ namespace SystemBrightSpotBE.Services.UserService
         public async Task<List<long>> GetManagedUsersId(long? id = null)
         {
             var result = new List<long>();
-            
+
             var userId = _authService.GetAccountId("Id");
             var tenantId = _authService.GetAccountId("Tenant");
             if (id != null && id > 0)
@@ -1087,7 +1062,8 @@ namespace SystemBrightSpotBE.Services.UserService
                     break;
             }
 
-            return await dataQuery.Select(r => new UserReportDto {
+            return await dataQuery.Select(r => new UserReportDto
+            {
                 id = r.id,
                 title = r.title,
                 date = r.date,
@@ -1717,9 +1693,9 @@ namespace SystemBrightSpotBE.Services.UserService
             {
                 departmentId = _authService.GetAccountId("Department");
             }
-            
+
             var query = _context.users.Where(u => u.deleted_at == null).Where(u => u.tenant_id == tenantId).AsQueryable();
-            
+
             long roleId = (long)_authService.GetAccountId("Role");
             if (roleId != (long)RoleEnum.SYSTEM_ADMIN)
             {

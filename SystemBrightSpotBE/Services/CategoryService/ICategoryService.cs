@@ -1,7 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using SystemBrightSpotBE.Dtos.Category;
-using SystemBrightSpotBE.Enums;
-
 namespace SystemBrightSpotBE.Services.CategoryService
 {
     public interface ICategoryService

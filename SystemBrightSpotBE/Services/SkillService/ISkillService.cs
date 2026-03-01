@@ -1,8 +1,4 @@
-﻿using SystemBrightSpotBE.Dtos.Category;
-using SystemBrightSpotBE.Dtos.Skill;
-using SystemBrightSpotBE.Enums;
-
-namespace SystemBrightSpotBE.Services.SkillService
+﻿namespace SystemBrightSpotBE.Services.SkillService
 {
     public interface ISkillService
     {

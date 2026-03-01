@@ -1,6 +1,4 @@
-﻿using SystemBrightSpotBE.Dtos.UserSkill;
-
-namespace SystemBrightSpotBE.Dtos.UserProject
+﻿namespace SystemBrightSpotBE.Dtos.UserProject
 {
     public class UserProjectDto
     {

@@ -1,11 +1,3 @@
-using log4net;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SystemBrightSpotBE.Attributes;
-using SystemBrightSpotBE.Dtos.Company;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Services.CompanyService;
-
 namespace SystemBrightSpotBE.Controllers
 {
     [Route("api/[controller]")]
@@ -171,7 +163,7 @@ namespace SystemBrightSpotBE.Controllers
             {
                 return JJsonResponse(StatusCodes.Status404NotFound, Message: ApiResource.CompanyNotFound);
             }
-            
+
             return JJsonResponse(StatusCodes.Status200OK, Message: ServerResource.Success, Data: company);
         }
     }

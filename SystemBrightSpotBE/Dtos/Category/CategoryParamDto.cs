@@ -1,6 +1,4 @@
-using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
-using SystemBrightSpotBE.Enums;
 
 namespace SystemBrightSpotBE.Dtos.Category
 {

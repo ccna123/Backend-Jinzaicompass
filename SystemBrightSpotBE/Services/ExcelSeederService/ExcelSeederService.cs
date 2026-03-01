@@ -1,9 +1,4 @@
-﻿using SystemBrightSpotBE.Models;
-using log4net;
-using OfficeOpenXml;
-using Microsoft.AspNet.Identity;
-
-namespace SystemBrightSpotBE.Services.ExcelSeederService
+﻿namespace SystemBrightSpotBE.Services.ExcelSeederService
 {
     public class ExcelSeederService : IExcelSeederService
     {

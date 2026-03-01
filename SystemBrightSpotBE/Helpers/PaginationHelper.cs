@@ -1,7 +1,4 @@
-﻿using SystemBrightSpotBE.Base.Pagination;
-using SystemBrightSpotBE.Filters;
-
-namespace SystemBrightSpotBE.Helpers
+﻿namespace SystemBrightSpotBE.Helpers
 {
     public class PaginationHelper
     {

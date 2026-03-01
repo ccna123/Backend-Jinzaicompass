@@ -185,11 +185,6 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 builder.Services.AddSingleton<LogInitializer>();
 builder.Services.AddHostedService<LogInitializerHostedService>();
 
-//=========================================
-// Init CronJob SERVICE
-//=========================================
-builder.Services.AddSingleton<IHostedService, TenantCronJobService>();
-
 
 //=========================================
 // Intergrate to AWS Lambda

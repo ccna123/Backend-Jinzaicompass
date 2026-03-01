@@ -1,11 +1,3 @@
-using log4net;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SystemBrightSpotBE.Attributes;
-using SystemBrightSpotBE.Dtos.Category;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Services.CategoryService;
-
 namespace SystemBrightSpotBE.Controllers
 {
     [Route("api/[controller]")]
@@ -95,7 +87,7 @@ namespace SystemBrightSpotBE.Controllers
                 return JJsonResponse(StatusCodes.Status404NotFound, Message: ApiResource.CategoryNotFound);
             }
 
-            var checkNameExist = await _categoryService.CheckNameExistAsync(request, update:true, category.id);
+            var checkNameExist = await _categoryService.CheckNameExistAsync(request, update: true, category.id);
             if (checkNameExist)
             {
                 return JJsonResponse(StatusCodes.Status400BadRequest, ErrorMessage: ApiResource.CategoryNameExist);
@@ -137,7 +129,8 @@ namespace SystemBrightSpotBE.Controllers
             }
 
             bool hasPermission = await _categoryService.HasPermission(category.id, request.type);
-            if (!hasPermission) {
+            if (!hasPermission)
+            {
                 return JJsonResponse(StatusCodes.Status403Forbidden, Message: ApiResource.CategoryHasMember);
             }
 

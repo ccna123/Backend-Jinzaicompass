@@ -1,5 +1,3 @@
-using SystemBrightSpotBE.Models;
-
 namespace SystemBrightSpotBE.Base
 {
     public class BaseTokenResponse
@@ -11,7 +9,7 @@ namespace SystemBrightSpotBE.Base
         public string code { get; set; }
         public long? role_id { get; set; }
         public long? department_id { get; set; }
-        public long? division_id { get; set; }  
+        public long? division_id { get; set; }
         public long? group_id { get; set; }
         public long? tenant_id { get; set; }
         public bool is_tenant_created { get; set; }

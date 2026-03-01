@@ -1,13 +1,4 @@
-﻿using AutoMapper;
-using log4net;
-using Microsoft.EntityFrameworkCore;
-using SystemBrightSpotBE.Dtos.Plan.UserPlanCondition;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Models;
-using SystemBrightSpotBE.Services.AuthService;
-using SystemBrightSpotBE.Services.S3Service;
-
-namespace SystemBrightSpotBE.Services.UserPlanConditionService
+﻿namespace SystemBrightSpotBE.Services.UserPlanConditionService
 {
     public class UserPlanConditionService : IUserPlanConditionService
     {
@@ -88,7 +79,7 @@ namespace SystemBrightSpotBE.Services.UserPlanConditionService
                 string fileUrl = String.Empty;
 
                 if (request.file != null && request.file.Length > 0)
-                {     
+                {
                     fileName = request.file.FileName;
                     var resultUpload = await _s3Service.UploadFileAsync(request.file, folder: "plan", width: null);
                     if (resultUpload != null)
@@ -177,7 +168,7 @@ namespace SystemBrightSpotBE.Services.UserPlanConditionService
 
                     _context.user_plan_condition_activity.Update(activity);
                     // Remove file if revoked request
-                    if (roleId == (long)RoleEnum.MEMBER && request.type == ActivityStatusEnum.REVOKED &&  !String.IsNullOrEmpty(activity.file_url))
+                    if (roleId == (long)RoleEnum.MEMBER && request.type == ActivityStatusEnum.REVOKED && !String.IsNullOrEmpty(activity.file_url))
                     {
                         await _s3Service.DeleteFileAsync(activity.file_url);
                     }

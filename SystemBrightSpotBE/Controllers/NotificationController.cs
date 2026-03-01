@@ -1,12 +1,3 @@
-using log4net;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SystemBrightSpotBE.Dtos.Report;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Services.NotificationService;
-using SystemBrightSpotBE.Services.ReportService;
-
 namespace SystemBrightSpotBE.Controllers
 {
     [Route("api/[controller]")]

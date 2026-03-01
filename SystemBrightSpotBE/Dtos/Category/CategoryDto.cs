@@ -1,6 +1,3 @@
-using Swashbuckle.AspNetCore.Annotations;
-using System.ComponentModel.DataAnnotations;
-
 namespace SystemBrightSpotBE.Dtos.Category
 {
     public class CategoryDto

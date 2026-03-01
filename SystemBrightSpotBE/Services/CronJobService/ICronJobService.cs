@@ -1,6 +1,4 @@
-﻿using NCrontab;
-
-namespace SystemBrightSpotBE.Services.CronJobService
+﻿namespace SystemBrightSpotBE.Services.CronJobService
 {
     public abstract class ICronJobService(string cronExpression, TimeZoneInfo timeZoneInfo) : IHostedService, IDisposable
     {

@@ -1,7 +1,4 @@
-using SystemBrightSpotBE.Dtos.UserStatusHistory;
 using System.ComponentModel.DataAnnotations;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SystemBrightSpotBE.Dtos.User

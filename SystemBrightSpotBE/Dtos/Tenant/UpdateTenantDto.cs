@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SystemBrightSpotBE.Resources;
 
 namespace SystemBrightSpotBE.Dtos.Tenant
 {
@@ -11,7 +10,7 @@ namespace SystemBrightSpotBE.Dtos.Tenant
 
         [Required(ErrorMessageResourceType = typeof(TenantResource), ErrorMessageResourceName = "EmailRequired")]
         [MaxLength(64, ErrorMessageResourceType = typeof(TenantResource), ErrorMessageResourceName = "EmailMaxLength")]
-        [RegularExpression(@"^[\w\.\-]+@([\w\-]+\.)+[a-zA-Z]{2,4}$",ErrorMessageResourceType = typeof(TenantResource), ErrorMessageResourceName = "EmailRegx")]
+        [RegularExpression(@"^[\w\.\-]+@([\w\-]+\.)+[a-zA-Z]{2,4}$", ErrorMessageResourceType = typeof(TenantResource), ErrorMessageResourceName = "EmailRegx")]
         public string email { get; set; } = String.Empty;
 
         [Required(ErrorMessageResourceType = typeof(TenantResource), ErrorMessageResourceName = "FirstNameRequired")]

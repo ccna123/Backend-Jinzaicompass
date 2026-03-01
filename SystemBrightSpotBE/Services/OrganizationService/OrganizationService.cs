@@ -1,12 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using SystemBrightSpotBE.Dtos.Category;
-using SystemBrightSpotBE.Dtos.Organization;
-using SystemBrightSpotBE.Enums;
-using SystemBrightSpotBE.Models;
-using SystemBrightSpotBE.Services.AuthService;
-
-namespace SystemBrightSpotBE.Services.OrganizationService
+﻿namespace SystemBrightSpotBE.Services.OrganizationService
 {
     public class OrganizationService : IOrganizationService
     {
@@ -15,11 +7,12 @@ namespace SystemBrightSpotBE.Services.OrganizationService
         private readonly IAuthService _authService;
 
         public OrganizationService(
-            DataContext context, 
-            IConfiguration configuration, 
+            DataContext context,
+            IConfiguration configuration,
             IMapper mapper,
             IAuthService authService
-        ) {
+        )
+        {
             _context = context;
             _mapper = mapper;
             _authService = authService;
@@ -132,7 +125,7 @@ namespace SystemBrightSpotBE.Services.OrganizationService
                     division_id = g.division_id
                 }).Cast<OrganizationDto>().ToList();
 
-           
+
             result.children = divisions.Concat(groups).ToList();
 
             return result;
@@ -332,7 +325,7 @@ namespace SystemBrightSpotBE.Services.OrganizationService
                         await _context.SaveChangesAsync();
                     }
                     break;
-        }
+            }
         }
 
         public async Task<bool> CheckNameExistAsync(BaseOrganizationDto request, bool update = false, long id = 0)

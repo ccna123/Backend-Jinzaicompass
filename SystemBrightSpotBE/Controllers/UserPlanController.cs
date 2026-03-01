@@ -1,10 +1,3 @@
-using log4net;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SystemBrightSpotBE.Dtos.Plan.UserPlan;
-using SystemBrightSpotBE.Resources;
-using SystemBrightSpotBE.Services.UserPlanService;
-
 namespace SystemBrightSpotBE.Controllers
 {
     [Route("api/user-plan")]
@@ -13,7 +6,7 @@ namespace SystemBrightSpotBE.Controllers
     {
         private readonly ILog _log;
         private readonly IUserPlanService _userPlanService;
-        
+
         public UserPlanController(
             IUserPlanService userPlanService
         )
@@ -69,7 +62,8 @@ namespace SystemBrightSpotBE.Controllers
             }
 
             var hasPermisstion = await _userPlanService.HasPermisstionByUserPlan(id, request.type);
-            if (!hasPermisstion) {
+            if (!hasPermisstion)
+            {
                 return JJsonResponse(StatusCodes.Status403Forbidden, ErrorMessage: ServerResource.Forbidden);
             }
 
