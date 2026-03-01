@@ -1,4 +1,13 @@
+using Amazon;
+using Amazon.Runtime;
+using Amazon.SQS;
+using Amazon.SQS.Model;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using SystemBrightSpotBE.Data;
+using SystemBrightSpotBE.Dtos.Contact;
+using SystemBrightSpotBE.Enums;
+using SystemBrightSpotBE.Services.AuthService;
 
 namespace SystemBrightSpotBE.Services.ContactServices
 {

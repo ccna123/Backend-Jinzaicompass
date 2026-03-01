@@ -1,4 +1,15 @@
-﻿namespace SystemBrightSpotBE.Controllers
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using SystemBrightSpotBE.Base;
+using SystemBrightSpotBE.Data;
+using SystemBrightSpotBE.Dtos.Auth;
+using SystemBrightSpotBE.Enums;
+using SystemBrightSpotBE.Resources;
+using SystemBrightSpotBE.Services.AuthService;
+
+namespace SystemBrightSpotBE.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using SystemBrightSpotBE.Models;
 
 namespace SystemBrightSpotBE.Base
 {

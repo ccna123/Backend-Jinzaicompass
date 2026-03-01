@@ -1,4 +1,7 @@
-﻿namespace SystemBrightSpotBE.Services.UserPlanConditionService
+﻿using SystemBrightSpotBE.Dtos.Plan.UserPlanCondition;
+using SystemBrightSpotBE.Enums;
+
+namespace SystemBrightSpotBE.Services.UserPlanConditionService
 {
     public interface IUserPlanConditionService
     {

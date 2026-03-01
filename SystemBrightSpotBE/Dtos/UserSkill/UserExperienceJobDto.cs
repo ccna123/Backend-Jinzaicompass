@@ -1,4 +1,6 @@
-﻿namespace SystemBrightSpotBE.Dtos.UserSkill
+﻿using SystemBrightSpotBE.Dtos.Skill;
+
+namespace SystemBrightSpotBE.Dtos.UserSkill
 {
     public class UserExperienceJobDto : SkillDto
     {

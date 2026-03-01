@@ -1,3 +1,5 @@
+using SystemBrightSpotBE.Models;
+
 namespace SystemBrightSpotBE.Base
 {
     public class BaseTokenResponse

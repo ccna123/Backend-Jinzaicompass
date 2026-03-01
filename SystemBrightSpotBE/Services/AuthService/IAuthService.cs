@@ -1,4 +1,6 @@
-﻿namespace SystemBrightSpotBE.Services.AuthService
+﻿using SystemBrightSpotBE.Models;
+
+namespace SystemBrightSpotBE.Services.AuthService
 {
     public interface IAuthService
     {

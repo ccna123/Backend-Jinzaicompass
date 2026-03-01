@@ -1,4 +1,9 @@
-﻿namespace SystemBrightSpotBE.Data
+﻿using Microsoft.EntityFrameworkCore;
+using SystemBrightSpotBE.Base;
+using SystemBrightSpotBE.Models;
+using SystemBrightSpotBE.Providers;
+
+namespace SystemBrightSpotBE.Data
 {
     public class DataContext : DbContext
     {

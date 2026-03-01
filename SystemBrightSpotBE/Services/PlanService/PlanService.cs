@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using log4net;
 using Microsoft.EntityFrameworkCore;
+using SystemBrightSpotBE.Data;
 using SystemBrightSpotBE.Dtos.Plan;
 using SystemBrightSpotBE.Dtos.Plan.LogActivity;
 using SystemBrightSpotBE.Dtos.Plan.PlanCondition;

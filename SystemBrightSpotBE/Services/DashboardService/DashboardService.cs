@@ -1,4 +1,13 @@
-﻿namespace SystemBrightSpotBE.Services.DashboardService
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using SystemBrightSpotBE.Data;
+using SystemBrightSpotBE.Dtos.Dashboard;
+using SystemBrightSpotBE.Dtos.Report;
+using SystemBrightSpotBE.Enums;
+using SystemBrightSpotBE.Services.AuthService;
+using SystemBrightSpotBE.Services.UserService;
+
+namespace SystemBrightSpotBE.Services.DashboardService
 {
     public class DashboardService : IDashboardService
     {

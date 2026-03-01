@@ -1,3 +1,13 @@
+using log4net;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SystemBrightSpotBE.Attributes;
+using SystemBrightSpotBE.Base;
+using SystemBrightSpotBE.Dtos.Skill;
+using SystemBrightSpotBE.Enums;
+using SystemBrightSpotBE.Resources;
+using SystemBrightSpotBE.Services.SkillService;
+
 namespace SystemBrightSpotBE.Controllers
 {
     [Route("api/[controller]")]
@@ -146,7 +156,7 @@ namespace SystemBrightSpotBE.Controllers
                 return JJsonResponse(StatusCodes.Status400BadRequest, ErrorMessage: ApiResource.CategoryNameExist);
             }
 
-            if (request.type != SkillTypeEnum.experience_job && request.experience_job_id == null)
+            if (request.type != Enums.SkillTypeEnum.experience_job && request.experience_job_id == null)
             {
                 return JJsonResponse(StatusCodes.Status400BadRequest, ErrorMessage: CategoryResource.ExperienceJobRequired);
             }

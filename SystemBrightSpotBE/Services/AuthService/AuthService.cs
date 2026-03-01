@@ -1,6 +1,16 @@
-﻿using System.Security.Claims;
+﻿using Amazon;
+using Amazon.Runtime;
+using Amazon.SQS;
+using Amazon.SQS.Model;
+using Microsoft.AspNet.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text.Json;
+using SystemBrightSpotBE.Data;
+using SystemBrightSpotBE.Enums;
+using SystemBrightSpotBE.Models;
 
 namespace SystemBrightSpotBE.Services.AuthService
 {

@@ -1,4 +1,15 @@
-﻿namespace SystemBrightSpotBE.Controllers
+﻿using log4net;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SystemBrightSpotBE.Attributes;
+using SystemBrightSpotBE.Base;
+using SystemBrightSpotBE.Data;
+using SystemBrightSpotBE.Dtos.MonitoringSystem;
+using SystemBrightSpotBE.Resources;
+using SystemBrightSpotBE.Services.AuthService;
+using SystemBrightSpotBE.Services.MonitoringSystemService;
+
+namespace SystemBrightSpotBE.Controllers
 {
     [Route("api/monitoring-system")]
     [ApiController]

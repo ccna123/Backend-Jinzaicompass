@@ -1,4 +1,7 @@
-﻿namespace SystemBrightSpotBE.Services.MonitoringSystemService
+﻿using SystemBrightSpotBE.Dtos.MonitoringSystem;
+using SystemBrightSpotBE.Models;
+
+namespace SystemBrightSpotBE.Services.MonitoringSystemService
 {
     public interface IMonitoringSystemService
     {

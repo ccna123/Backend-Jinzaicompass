@@ -1,3 +1,6 @@
+using SystemBrightSpotBE.Base.Pagination;
+using SystemBrightSpotBE.Dtos.Report;
+
 namespace SystemBrightSpotBE.Services.ReportService
 {
     public interface IReportService

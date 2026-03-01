@@ -1,6 +1,31 @@
+using Amazon;
+using Amazon.Runtime;
+using Amazon.SQS;
+using Amazon.SQS.Model;
+using AutoMapper;
+using log4net;
+using Microsoft.AspNet.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Json;
+using System.Web.Http;
+using SystemBrightSpotBE.Base;
+using SystemBrightSpotBE.Base.Pagination;
+using SystemBrightSpotBE.Data;
+using SystemBrightSpotBE.Dtos.User;
+using SystemBrightSpotBE.Dtos.UserCertification;
+using SystemBrightSpotBE.Dtos.UserCompanyAward;
+using SystemBrightSpotBE.Dtos.UserManager;
+using SystemBrightSpotBE.Dtos.UserProject;
+using SystemBrightSpotBE.Dtos.UserSkill;
+using SystemBrightSpotBE.Enums;
+using SystemBrightSpotBE.Filters;
+using SystemBrightSpotBE.Helpers;
+using SystemBrightSpotBE.Models;
+using SystemBrightSpotBE.Resources;
+using SystemBrightSpotBE.Services.AuthService;
+using SystemBrightSpotBE.Services.S3Service;
 
 namespace SystemBrightSpotBE.Services.UserService
 {

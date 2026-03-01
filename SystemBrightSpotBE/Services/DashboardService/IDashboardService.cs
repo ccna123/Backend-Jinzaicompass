@@ -1,4 +1,6 @@
-﻿namespace SystemBrightSpotBE.Services.DashboardService
+﻿using SystemBrightSpotBE.Dtos.Dashboard;
+
+namespace SystemBrightSpotBE.Services.DashboardService
 {
     public interface IDashboardService
     {

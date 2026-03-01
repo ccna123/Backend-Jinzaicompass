@@ -1,4 +1,14 @@
-﻿namespace SystemBrightSpotBE.Services.CompanyService
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using SystemBrightSpotBE.Base.Pagination;
+using SystemBrightSpotBE.Data;
+using SystemBrightSpotBE.Dtos.Company;
+using SystemBrightSpotBE.Filters;
+using SystemBrightSpotBE.Helpers;
+using SystemBrightSpotBE.Models;
+using SystemBrightSpotBE.Services.AuthService;
+
+namespace SystemBrightSpotBE.Services.CompanyService
 {
     public class CompanyService : ICompanyService
     {

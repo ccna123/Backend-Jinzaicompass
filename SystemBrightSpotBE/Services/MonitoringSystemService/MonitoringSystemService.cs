@@ -1,4 +1,17 @@
-﻿using System.Text.Json;
+﻿using Amazon;
+using Amazon.Runtime;
+using Amazon.SQS;
+using Amazon.SQS.Model;
+using AutoMapper;
+using log4net;
+using Microsoft.AspNet.Identity;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using SystemBrightSpotBE.Data;
+using SystemBrightSpotBE.Dtos.MonitoringSystem;
+using SystemBrightSpotBE.Enums;
+using SystemBrightSpotBE.Models;
+using SystemBrightSpotBE.Services.AuthService;
 
 namespace SystemBrightSpotBE.Services.MonitoringSystemService
 {

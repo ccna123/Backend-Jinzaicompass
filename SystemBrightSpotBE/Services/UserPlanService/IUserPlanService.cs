@@ -1,4 +1,7 @@
-﻿namespace SystemBrightSpotBE.Services.UserPlanService
+﻿using SystemBrightSpotBE.Dtos.Plan.UserPlan;
+using SystemBrightSpotBE.Enums;
+
+namespace SystemBrightSpotBE.Services.UserPlanService
 {
     public interface IUserPlanService
     {

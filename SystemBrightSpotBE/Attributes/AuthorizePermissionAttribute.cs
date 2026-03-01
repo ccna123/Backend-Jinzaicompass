@@ -1,3 +1,9 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using SystemBrightSpotBE.Data;
+using SystemBrightSpotBE.Resources;
+using SystemBrightSpotBE.Services.AuthService;
+
 namespace SystemBrightSpotBE.Attributes
 {
     public class AuthorizePermissionAttribute : Attribute, IAuthorizationFilter

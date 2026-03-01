@@ -1,4 +1,13 @@
-﻿namespace SystemBrightSpotBE.Services.OrganizationService
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using SystemBrightSpotBE.Data;
+using SystemBrightSpotBE.Dtos.Category;
+using SystemBrightSpotBE.Dtos.Organization;
+using SystemBrightSpotBE.Enums;
+using SystemBrightSpotBE.Models;
+using SystemBrightSpotBE.Services.AuthService;
+
+namespace SystemBrightSpotBE.Services.OrganizationService
 {
     public class OrganizationService : IOrganizationService
     {

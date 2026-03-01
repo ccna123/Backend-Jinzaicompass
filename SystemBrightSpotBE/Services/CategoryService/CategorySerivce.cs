@@ -1,3 +1,12 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SystemBrightSpotBE.Data;
+using SystemBrightSpotBE.Dtos.Category;
+using SystemBrightSpotBE.Enums;
+using SystemBrightSpotBE.Models;
+using SystemBrightSpotBE.Services.AuthService;
+
 namespace SystemBrightSpotBE.Services.CategoryService
 {
     public class CategoryService : ICategoryService

@@ -1,4 +1,21 @@
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.Model;
+using Amazon.SQS;
+using Amazon.SQS.Model;
+using AutoMapper;
+using log4net;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using SystemBrightSpotBE.Base.Pagination;
+using SystemBrightSpotBE.Data;
+using SystemBrightSpotBE.Dtos.Report;
+using SystemBrightSpotBE.Enums;
+using SystemBrightSpotBE.Filters;
+using SystemBrightSpotBE.Helpers;
+using SystemBrightSpotBE.Models;
+using SystemBrightSpotBE.Services.AuthService;
+using SystemBrightSpotBE.Services.NotificationService;
+using SystemBrightSpotBE.Services.UserService;
 
 namespace SystemBrightSpotBE.Services.ReportService
 {

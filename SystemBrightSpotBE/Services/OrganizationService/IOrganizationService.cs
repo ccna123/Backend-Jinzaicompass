@@ -1,4 +1,8 @@
-﻿namespace SystemBrightSpotBE.Services.OrganizationService
+﻿using SystemBrightSpotBE.Dtos.Category;
+using SystemBrightSpotBE.Dtos.Organization;
+using SystemBrightSpotBE.Enums;
+
+namespace SystemBrightSpotBE.Services.OrganizationService
 {
     public interface IOrganizationService
     {
