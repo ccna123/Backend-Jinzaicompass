@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using SystemBrightSpotBE.Dtos.Plan.PlanCondition;
 
 namespace SystemBrightSpotBE.Dtos.Plan
 {

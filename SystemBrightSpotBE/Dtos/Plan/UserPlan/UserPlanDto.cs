@@ -1,4 +1,6 @@
-﻿namespace SystemBrightSpotBE.Dtos.Plan.UserPlan
+﻿using SystemBrightSpotBE.Dtos.Plan.UserPlanCondition;
+
+namespace SystemBrightSpotBE.Dtos.Plan.UserPlan
 {
     public class UserPlanDto
     {

@@ -1,3 +1,5 @@
+using SystemBrightSpotBE.Dtos.UserStatusHistory;
+
 namespace SystemBrightSpotBE.Dtos.User
 {
     public class UserDto

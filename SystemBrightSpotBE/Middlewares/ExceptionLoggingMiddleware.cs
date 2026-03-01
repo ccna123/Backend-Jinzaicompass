@@ -1,3 +1,5 @@
+using log4net;
+
 namespace SystemBrightSpotBE.Middlewares
 {
     public class ExceptionLoggingMiddleware

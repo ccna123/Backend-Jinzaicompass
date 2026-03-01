@@ -1,4 +1,6 @@
-﻿namespace SystemBrightSpotBE.Dtos.Plan
+﻿using SystemBrightSpotBE.Dtos.Plan.UserPlan;
+
+namespace SystemBrightSpotBE.Dtos.Plan
 {
     public class DetailPlanDto : PlanDto
     {

@@ -1,4 +1,6 @@
-﻿namespace SystemBrightSpotBE.Dtos.Skill
+﻿using SystemBrightSpotBE.Enums;
+
+namespace SystemBrightSpotBE.Dtos.Skill
 {
     public class SpecificSkillDto : SkillDto
     {

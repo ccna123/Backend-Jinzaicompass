@@ -1,4 +1,13 @@
-﻿namespace SystemBrightSpotBE.PDFDocument
+﻿using QuestPDF.Drawing;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Png;
+using SystemBrightSpotBE.Dtos.Report;
+
+namespace SystemBrightSpotBE.PDFDocument
 {
     public class ReportDoc : IDocument
     {

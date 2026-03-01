@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using SystemBrightSpotBE.Attributes;
+using SystemBrightSpotBE.Resources;
 
 namespace SystemBrightSpotBE.Dtos.User
 {

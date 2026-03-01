@@ -1,4 +1,12 @@
-﻿namespace SystemBrightSpotBE.Services.NotificationService
+﻿using AutoMapper;
+using log4net;
+using Microsoft.EntityFrameworkCore;
+using SystemBrightSpotBE.Data;
+using SystemBrightSpotBE.Dtos.Notification;
+using SystemBrightSpotBE.Models;
+using SystemBrightSpotBE.Services.AuthService;
+
+namespace SystemBrightSpotBE.Services.NotificationService
 {
     public class NotificationService : INotificationService
     {

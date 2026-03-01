@@ -1,4 +1,10 @@
-﻿namespace SystemBrightSpotBE.PDFDocument
+﻿using QuestPDF.Drawing;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using SystemBrightSpotBE.Dtos.UserProject;
+
+namespace SystemBrightSpotBE.PDFDocument
 {
     public class SkillSheetDoc : IDocument
     {

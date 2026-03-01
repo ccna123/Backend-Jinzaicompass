@@ -1,5 +1,6 @@
 
 using AutoMapper;
+using SystemBrightSpotBE.Base;
 using SystemBrightSpotBE.Dtos.Category;
 using SystemBrightSpotBE.Dtos.Company;
 using SystemBrightSpotBE.Dtos.MonitoringSystem;

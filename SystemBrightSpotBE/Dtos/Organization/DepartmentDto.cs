@@ -1,4 +1,6 @@
-﻿namespace SystemBrightSpotBE.Dtos.Organization
+﻿using SystemBrightSpotBE.Enums;
+
+namespace SystemBrightSpotBE.Dtos.Organization
 {
     public class DepartmentDto : OrganizationDto
     {

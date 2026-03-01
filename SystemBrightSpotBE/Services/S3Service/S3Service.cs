@@ -1,4 +1,10 @@
-﻿using System.Xml.Linq;
+﻿using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.S3.Transfer;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Advanced;
+using SixLabors.ImageSharp.Processing;
+using System.Xml.Linq;
 
 namespace SystemBrightSpotBE.Services.S3Service
 {

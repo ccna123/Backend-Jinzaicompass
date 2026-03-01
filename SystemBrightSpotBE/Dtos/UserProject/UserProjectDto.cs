@@ -1,4 +1,6 @@
-﻿namespace SystemBrightSpotBE.Dtos.UserProject
+﻿using SystemBrightSpotBE.Dtos.UserSkill;
+
+namespace SystemBrightSpotBE.Dtos.UserProject
 {
     public class UserProjectDto
     {

@@ -1,3 +1,5 @@
+using SystemBrightSpotBE.Dtos.Report;
+
 public class ReportDto
 {
     public long id { get; set; }

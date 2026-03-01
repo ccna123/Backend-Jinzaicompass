@@ -1,4 +1,6 @@
-﻿namespace SystemBrightSpotBE.Dtos.Plan.UserPlanCondition
+﻿using SystemBrightSpotBE.Dtos.Plan.UserPlan;
+
+namespace SystemBrightSpotBE.Dtos.Plan.UserPlanCondition
 {
     public class LastConditionActivityDto
     {
